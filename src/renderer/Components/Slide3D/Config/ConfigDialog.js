@@ -57,6 +57,10 @@ const ConfigDialog = props => {
     saveToLocalStorage(defaultConfig);
   }, [defaultConfig, saveToLocalStorage, setConfig])
 
+  const openDevTools = React.useCallback(() => {
+    window.electron.ipcRenderer.sendMessage('openDevtools');
+  }, [])
+
   return (
       <CustomDialog open={configDialogOpen} onClose={handleYes}>
         <DialogTitle>
@@ -65,6 +69,11 @@ const ConfigDialog = props => {
             onClick={setConfigDefault}
           >
             Set Default
+          </StyledSpan>
+          <StyledSpan
+            onClick={openDevTools}
+          >
+            Open DevTools
           </StyledSpan>
           <Version>
             [version: {version}]
