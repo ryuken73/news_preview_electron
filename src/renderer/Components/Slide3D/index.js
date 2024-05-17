@@ -239,7 +239,7 @@ const USE_STATIC_TY = false;
 const TY = 10;
 
 function Slide3D(props) {
-  const {db, parentRef} = props;
+  const { db, parentRef, currentAssetId, newsPreviewList, setDBFromServer } = props;
   const [storedValue, saveToLocalStorage] = useLocalStorage('slide3D', INITIAL_CONFIG);
   const [animationPaused, setAnimationPaused] = React.useState(false);
   const [activeIdState, setActiveIdState] = React.useState(null);
@@ -265,7 +265,7 @@ function Slide3D(props) {
   const destXY = React.useRef({x:0, y:0});
   const targetXY = React.useRef({x:0, y:0});
   // console.log(startXY, destXY, targetXY)
-  console.log('##', config, db)
+  console.log('##', config, db, currentAssetId)
 
   const ANIMATION_SECONDS = config.animationTime;
   const ANIMATION_MILLI_SECONDS = config.animationTime * 1000;
@@ -836,6 +836,9 @@ function Slide3D(props) {
         saveToLocalStorage={saveToLocalStorage}
         defaultConfig={INITIAL_CONFIG}
         runInitialAnimation={runInitialAnimation}
+        currentAssetId={currentAssetId}
+        newsPreviewList={newsPreviewList}
+        setDBFromServer={setDBFromServer}
       ></ConfigDialog>
     </TopContainer>
   )

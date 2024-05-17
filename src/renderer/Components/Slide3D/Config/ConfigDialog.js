@@ -32,10 +32,13 @@ const StyledSpan = styled.button`
 `
 const Version = styled.span`
   margin-left: 10px;
+  margin-right: 10px;
   font-size: 15px;
   opacity: 0.6;
 `
-const ConfigDialog = props => {
+const StyledSelect = styled.select`
+`
+function ConfigDialog(props) {
   console.log(props)
   const { 
     configDialogOpen, 
@@ -45,7 +48,10 @@ const ConfigDialog = props => {
     saveToLocalStorage,
     defaultConfig,
     updateConfig,
-    runInitialAnimation
+    runInitialAnimation,
+    currentAssetId,
+    newsPreviewList,
+    setDBFromServer
   } = props;
 
   const handleYes = React.useCallback(() => {
@@ -60,6 +66,16 @@ const ConfigDialog = props => {
   const openDevTools = React.useCallback(() => {
     window.electron.ipcRenderer.sendMessage('openDevtools');
   }, [])
+
+  const changePreview = React.useCallback((event) => {
+    const assetId = event.target.value;
+    if(assetId === 'select') return;
+    setDBFromServer('byAssetId', assetId);
+    },
+    [setDBFromServer],
+  );
+
+  console.log('##', currentAssetId, typeof currentAssetId);
 
   return (
       <CustomDialog open={configDialogOpen} onClose={handleYes}>
@@ -78,6 +94,24 @@ const ConfigDialog = props => {
           <Version>
             [version: {version}]
           </Version>
+          <StyledSelect onChange={changePreview}>
+            <option value="select">Select a Preview</option>
+            {newsPreviewList.map(newsPreview => (
+              newsPreview.assetId == currentAssetId ?(
+              <option
+                value={newsPreview.assetId}
+                selected
+              >
+                {newsPreview.assetTitle}
+              </option>
+              ) :
+              (<option
+                value={newsPreview.assetId}
+              >
+                {newsPreview.assetTitle}
+              </option>)
+            ))}
+          </StyledSelect>
         </DialogTitle>
         <Container>
           <LeftSide config={config} updateConfig={updateConfig} runInitialAnimation={runInitialAnimation} />

@@ -1,9 +1,9 @@
 import './App.css';
 import React from 'react';
-import Slide3D from './Components/Slide3D';
-import TinderCards from './Components/TinderCards';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
+import Slide3D from './Components/Slide3D';
+import TinderCards from './Components/TinderCards';
 
 const Container = styled.div`
   background-color: #111;
@@ -14,14 +14,6 @@ const Container = styled.div`
   overflow: hidden;
   color: white;
   perspective: 4000px;
-`;
-const ModeSelectBtn = styled.div`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  font-size: 20px;
-  color: white;
-  opacity: 0.2;
 `;
 const DEFAULT_DB = [
   // {id: 9, title: '한파', src: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4'},
@@ -46,29 +38,30 @@ const URL_MAPS = {
   latestNewsPreview: `${ASSET_INFO_URL}/asset/latestNewsPreview`,
   newsPreviewList: `${ASSET_INFO_URL}/assetList/newsPreview`,
 };
-const getDBFromServer = async (options) => {
+const getAssetFromServer = async (options) => {
   const { cmd, param = null } = options;
   const baseUrl = URL_MAPS[cmd];
   const url = param === null ? baseUrl : `${baseUrl}/${param}`;
-  // return fetch(`${ASSET_INFO_URL}/asset/${assetId}`)
   return fetch(url)
     .then((result) => {
       return result.json();
     })
     .then((data) => {
-      const { sources } = data;
-      const dbFromServer = sources.map((source) => {
+      if (cmd === 'newsPreviewList') {
+        const { assetList = [] } = data;
+        return assetList;
+      }
+      const { assetId, sources } = data;
+      const sourcesForDB = sources.map((source) => {
         return {
           id: source.srcId,
           title: source.srcTitle,
           src: source.srcRemote,
         };
       });
-      return dbFromServer;
+      return { assetId, sources: sourcesForDB };
     });
 };
-
-const TEST_ASSET_ID = 1715920696399;
 
 function App() {
   const [mode, setMode] = React.useState('slide');
@@ -76,34 +69,47 @@ function App() {
   const [searchParams] = useSearchParams();
   const assetId = searchParams.get('assetId') || null;
   const [db, setDB] = React.useState(DEFAULT_DB);
+  const [currentAssetId, setCurrentAssetId] = React.useState(null);
+  const [newsPreviewList, setNewsPreviewList] = React.useState([]);
   console.log(assetId);
+  console.log('####', currentAssetId, newsPreviewList)
+
+  const setDBFromServer = React.useCallback(async (cmd, param) => {
+    const { assetId, sources } = await getAssetFromServer({
+      cmd,
+      param
+    });
+    setDB(sources);
+    setCurrentAssetId(assetId);
+  }, []);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(async () => {
-    const dbFromServer = await getDBFromServer({
-      cmd: 'latestNewsPreview',
-    });
-    setDB(dbFromServer);
+    // const {assetId, sources} = await getAssetFromServer({
+    //   cmd: 'latestNewsPreview',
+    // });
+    // setDB(sources);
+    // setCurrentAssetId(assetId);
+    await setDBFromServer('latestNewsPreview');
+    const assetList = await getAssetFromServer({
+      cmd: 'newsPreviewList'
+    })
+    setNewsPreviewList(assetList);
   }, []);
 
-  const onClickModeSelectBtn = React.useCallback(() => {
-    setMode((mode) => {
-      return mode === 'tinder' ? 'slide' : 'tinder';
-    });
-  }, []);
   return (
     <div className="App">
       <Container ref={containerRef}>
-        {mode === 'tinder' && <TinderCards db={db}></TinderCards>}
+        {mode === 'tinder' && <TinderCards db={db} />}
         {mode === 'slide' && (
-          <Slide3D db={db} parentRef={containerRef}></Slide3D>
+          <Slide3D
+            db={db}
+            parentRef={containerRef}
+            currentAssetId={currentAssetId}
+            newsPreviewList={newsPreviewList}
+            setDBFromServer={setDBFromServer}
+          />
         )}
-
-        {/* <ModeSelectBtn
-          onClick={onClickModeSelectBtn}
-        >
-          Mode
-        </ModeSelectBtn> */}
       </Container>
     </div>
   );
