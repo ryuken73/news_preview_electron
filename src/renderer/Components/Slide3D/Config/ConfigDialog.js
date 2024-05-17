@@ -70,7 +70,7 @@ function ConfigDialog(props) {
   const changePreview = React.useCallback((event) => {
     const assetId = event.target.value;
     if(assetId === 'select') return;
-    setDBFromServer('byAssetId', assetId);
+      setDBFromServer('byAssetId', assetId);
     },
     [setDBFromServer],
   );

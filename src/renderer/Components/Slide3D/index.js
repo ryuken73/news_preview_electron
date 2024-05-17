@@ -269,6 +269,8 @@ function Slide3D(props) {
 
   const ANIMATION_SECONDS = config.animationTime;
   const ANIMATION_MILLI_SECONDS = config.animationTime * 1000;
+  const USE_LOCAL_PATH = config.useLocalPath || false;
+  const LOCAL_MEDIA_PATH = config.mediaRoot;
 
   const toggleDialogOpen = React.useCallback(() => {
     setConfigDialogOpen(configDialogOpen => !configDialogOpen);
@@ -723,6 +725,18 @@ function Slide3D(props) {
   const idleVideoHeight = config.idleVideoWidth * (9/16);
   const reflectionGap = idleVideoHeight + 10;
 
+  const REG_PATTERN = /http:\/\/.*\/(\d{8}\/.*\.mp4)/;
+  const toLocalPath = React.useCallback((remoteSrc) => {
+    const match = remoteSrc.match(REG_PATTERN);
+    if(match === null){
+      return remoteSrc;
+    }
+    const group = match[1];
+    const localSrc = `${LOCAL_MEDIA_PATH}/${group}`;
+    console.log(localSrc)
+    return localSrc
+  })
+
   return (
     <TopContainer>
       {/* <SnowBackground></SnowBackground> */}
@@ -751,7 +765,7 @@ function Slide3D(props) {
               <Item
                 crossOrigin="anonymous"
                 id={i}
-                src={item.src}
+                src={USE_LOCAL_PATH ? toLocalPath(item.src) : item.src}
                 ref={el => itemsRef.current[i] = el}
                 itemIndex={i}
                 itemLength={db.length}
