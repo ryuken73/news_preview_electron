@@ -11,6 +11,7 @@ import SetVideoGreyWhenDone from './SetVideoGreyWhenDone';
 import SetVideoGreyWhenAllDone from './SetVideoGreyWhenAllDone';
 import SetUseLocalPath from './SetUseLocalPath';
 import SetRotationTimeLast from './SetRotationTimeLast';
+import SetLocalMediaPath from './SetLocalMediaPath';
 
 function RightSide(props) {
   const {config, updateConfig} = props;
@@ -47,6 +48,9 @@ function RightSide(props) {
       </DialogContentText>
       <DialogContentText sx={{ color: 'white' }}>
         <SetUseLocalPath config={config} updateConfig={updateConfig} />
+      </DialogContentText>
+      <DialogContentText sx={{ color: 'white' }}>
+        <SetLocalMediaPath config={config} updateConfig={updateConfig} />
       </DialogContentText>
       <p></p>
     </DialogContent>
