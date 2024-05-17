@@ -41,6 +41,34 @@ const DEFAULT_DB = [
 const mode = process.env.NODE_ENV === 'development' ? 'dev' : 'prd';
 const ASSET_INFO_URL =
   mode === 'dev' ? 'http://localhost' : 'http://10.10.104.246';
+const URL_MAPS = {
+  byAssetId: `${ASSET_INFO_URL}/asset`,
+  latestNewsPreview: `${ASSET_INFO_URL}/asset/latestNewsPreview`,
+  newsPreviewList: `${ASSET_INFO_URL}/assetList/newsPreview`,
+};
+const getDBFromServer = async (options) => {
+  const { cmd, param = null } = options;
+  const baseUrl = URL_MAPS[cmd];
+  const url = param === null ? baseUrl : `${baseUrl}/${param}`;
+  // return fetch(`${ASSET_INFO_URL}/asset/${assetId}`)
+  return fetch(url)
+    .then((result) => {
+      return result.json();
+    })
+    .then((data) => {
+      const { sources } = data;
+      const dbFromServer = sources.map((source) => {
+        return {
+          id: source.srcId,
+          title: source.srcTitle,
+          src: source.srcRemote,
+        };
+      });
+      return dbFromServer;
+    });
+};
+
+const TEST_ASSET_ID = 1715920696399;
 
 function App() {
   const [mode, setMode] = React.useState('slide');
@@ -50,27 +78,13 @@ function App() {
   const [db, setDB] = React.useState(DEFAULT_DB);
   console.log(assetId);
 
-  React.useEffect(() => {
-    if (assetId === null) {
-      return;
-    }
-    fetch(`${ASSET_INFO_URL}/asset/${assetId}`)
-      .then((result) => {
-        return result.json();
-      })
-      .then((data) => {
-        const { sources } = data;
-        const dbFromServer = sources.map((source) => {
-          return {
-            id: source.srcId,
-            title: source.srcTitle,
-            src: source.srcRemote,
-          };
-        });
-        console.log(dbFromServer);
-        setDB(dbFromServer);
-      });
-  }, [assetId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(async () => {
+    const dbFromServer = await getDBFromServer({
+      cmd: 'latestNewsPreview',
+    });
+    setDB(dbFromServer);
+  }, []);
 
   const onClickModeSelectBtn = React.useCallback(() => {
     setMode((mode) => {
