@@ -13,7 +13,7 @@ const ControlContainer = styled.div`
 `
 const Buttons = styled.div`
   display: ${props => !props.show && 'none'};
-  min-width: 100px;
+  min-width: 200px;
   margin: auto;
   z-index: 9999;
   position: relative;
