@@ -23,6 +23,7 @@ const defaultConfig = {
   titleOpacity: 1,
   animationTime: 0.5,
   rotationTime: 60,
-  rotationTimeLast: 15
+  rotationTimeLast: 15,
+  useLocalPath: false
 }
 export default defaultConfig

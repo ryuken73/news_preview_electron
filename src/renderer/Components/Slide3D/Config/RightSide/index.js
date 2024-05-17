@@ -9,6 +9,7 @@ import SetAutoPlay from './SetAutoPlay';
 import SetIdleVideoWidth from './SetIdleVideoWidth';
 import SetVideoGreyWhenDone from './SetVideoGreyWhenDone';
 import SetVideoGreyWhenAllDone from './SetVideoGreyWhenAllDone';
+import SetUseLocalPath from './SetUseLocalPath';
 import SetRotationTimeLast from './SetRotationTimeLast';
 
 function RightSide(props) {
@@ -43,6 +44,9 @@ function RightSide(props) {
       </DialogContentText>
       <DialogContentText sx={{ color: 'white' }}>
         <SetRotationTimeLast config={config} updateConfig={updateConfig} />
+      </DialogContentText>
+      <DialogContentText sx={{ color: 'white' }}>
+        <SetUseLocalPath config={config} updateConfig={updateConfig} />
       </DialogContentText>
       <p></p>
     </DialogContent>
