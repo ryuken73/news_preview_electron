@@ -43,7 +43,12 @@ ipcMain.on('showOpenDialog', async (event, dialogConfig) => {
 });
 
 ipcMain.on('toggleScreenSize', () => {
-
+  const currentWindow = BrowserWindow.getFocusedWindow();
+  if (currentWindow.fullScreen) {
+    currentWindow.setFullScreen(false);
+  } else {
+    currentWindow.setFullScreen(true);
+  }
 })
 
 ipcMain.on('quitApp', async () => {
