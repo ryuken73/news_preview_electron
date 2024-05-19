@@ -60,7 +60,14 @@ const getAssetFromServer = async (options) => {
         };
       });
       return { assetId, sources: sourcesForDB };
-    });
+    })
+    .catch((err) => {
+      console.error(err)
+      if (cmd === 'newsPreviewList'){
+        return null;
+      }
+      return { assetId: null, sources: [] };
+    })
 };
 
 function App() {
@@ -79,7 +86,9 @@ function App() {
       cmd,
       param
     });
-    setDB(sources);
+    if (sources.length > 0) {
+      setDB(sources);
+    }
     setCurrentAssetId(assetId);
   }, []);
 
@@ -94,7 +103,9 @@ function App() {
     const assetList = await getAssetFromServer({
       cmd: 'newsPreviewList'
     })
-    setNewsPreviewList(assetList);
+    if(assetList !== null){
+      setNewsPreviewList(assetList);
+    }
   }, []);
 
   return (

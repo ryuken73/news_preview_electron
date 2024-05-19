@@ -40,17 +40,17 @@ const StyledSelect = styled.select`
 `
 function ConfigDialog(props) {
   console.log(props)
-  const { 
-    configDialogOpen, 
+  const {
+    configDialogOpen,
     toggleDialogOpen ,
-    config, 
+    config,
     setConfig,
     saveToLocalStorage,
     defaultConfig,
     updateConfig,
     runInitialAnimation,
     currentAssetId,
-    newsPreviewList,
+    newsPreviewList=[],
     setDBFromServer
   } = props;
 
