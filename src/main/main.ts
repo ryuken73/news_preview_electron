@@ -23,6 +23,9 @@ class AppUpdater {
   }
 }
 
+const isDevelopment =
+  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('ipc-example', async (event, arg) => {
@@ -107,6 +110,7 @@ const createWindow = async () => {
     width: 1024,
     height: 728,
     icon: getAssetPath('icon.png'),
+    frame: isDevelopment,
     webPreferences: {
       webSecurity: false,
       preload: app.isPackaged

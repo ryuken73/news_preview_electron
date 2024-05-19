@@ -53,19 +53,21 @@ const CustomSettingIcon = styled(SettingsIcon)`
 `
 const CustomFullScreenIcon = styled(FullscreenIcon)`
   position: absolute;
-  bottom: -160px;
+  top: -50px;
   right: 100px;
   margin: 10px;
   z-index: 9999;
   opacity: 0.1;
+  color: lightgrey;
 `
 const CustomCloseIcon = styled(CloseIcon)`
   position: absolute;
-  bottom: -160px;
+  top: -50px;
   right: 30px;
   margin: 10px;
   z-index: 9999;
   opacity: 0.1;
+  color: lightgrey;
 `
 const CustomPlayIcon = styled(PlayCircleFilledIcon)`
   display: ${props => !props.show && 'none !important'};
@@ -158,12 +160,12 @@ const RightSide = (props) => {
             onClick={toggleDialogOpen}
           ></CustomSettingIcon>
           <CustomFullScreenIcon
-            fontSize='large'
+            fontSize='medium'
             className={CLASS_FOR_POINTER_EVENT_FREE}
             onClick={toggleScreenSize}
           ></CustomFullScreenIcon>
           <CustomCloseIcon
-            fontSize='large'
+            fontSize='medium'
             className={CLASS_FOR_POINTER_EVENT_FREE}
             onClick={quitApp}
           ></CustomCloseIcon>
