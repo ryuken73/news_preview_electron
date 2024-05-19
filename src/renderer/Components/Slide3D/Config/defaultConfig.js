@@ -8,6 +8,7 @@ const defaultConfig = {
   stackOpacity: 1,
   degreeOfLast: 10,
   videoScale: 2,
+  scaleStyle: '1',
   idleVideoWidth: 640,
   greyForDoneItem: true,
   greyForDoneAll: false,

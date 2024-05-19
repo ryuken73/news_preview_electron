@@ -5,6 +5,7 @@ import SetAutoRotate from './SetAutoRotate';
 import SetMoveUpward from './SetMoveUpward';
 import SetScaleOrigin from './SetScaleOrigin';
 import SetVideoScale from './SetVideoScale';
+import SetScaleStyle from './SetScaleStyle';
 import SetItemRadius from './SetItemRadius';
 import SetAnimationTime from './SetAnimationTime';
 import SetStartWithStacked from './SetStartWithStacked';
@@ -29,6 +30,9 @@ function LeftSide(props) {
       </DialogContentText>
       <DialogContentText sx={{ color: 'white' }}>
         <SetVideoScale config={config} updateConfig={updateConfig} />
+      </DialogContentText>
+      <DialogContentText sx={{ color: 'white' }}>
+        <SetScaleStyle config={config} updateConfig={updateConfig} />
       </DialogContentText>
       <DialogContentText sx={{ color: 'white' }}>
         <SetScaleOrigin config={config} updateConfig={updateConfig} />

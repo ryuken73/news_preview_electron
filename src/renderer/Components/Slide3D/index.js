@@ -108,6 +108,15 @@ const titleStyles = [
   'radial-gradient(circle at 85.4% 50.8%, rgb(14, 72, 222) 0%, rgb(3, 22, 65) 74.2%)',
   'linear-gradient(115.7deg, rgb(3, 79, 135) 6.2%, rgb(0, 184, 214) 112.9%)',
 ]
+const scaleStyles = [
+  'cubic-bezier(.85,-0.13,.95,-0.11)',
+  'ease',
+  'cubic-bezier(.57,-0.9,.76,1.66)',
+  'cubic-bezier(.21,-0.43,.57,-0.14)',
+  'cubic-bezier(.29,-0.21,.58,-0.05)',
+  'cubic-bezier(.53,-0.21,.95,-0.11)',
+  'cubic-bezier(.7,-0.18,.95,-0.11)'
+]
 const VideoTitle = styled.div`
   position: absolute;
   top: 0px;
@@ -180,7 +189,7 @@ const ItemMirror = styled.video`
   box-shadow: 0 0 1px #fff;
   box-sizing: border-box;
   transform: ${props => `translateY(${props.gap}px) scale(1, -1)`};
-  -webkit-mask-image: linear-gradient(transparent, transparent, #0007); 
+  -webkit-mask-image: linear-gradient(transparent, transparent, #0007);
   z-index: -100;
 `
 const Item = styled.video`
@@ -225,7 +234,7 @@ const BarImage = styled.img`
 `
 // const radius = 800; // how big of the radius
 const CLASS_FOR_POINTER_EVENT_FREE = 'buttonClass';
-const INITIAL_CONFIG = defaultConfig; 
+const INITIAL_CONFIG = defaultConfig;
 
 const makePlayerFront = (element, degree) => {
   element.style.transform = `rotateX(0deg) rotateY(${degree * -1}deg)`
@@ -271,6 +280,8 @@ function Slide3D(props) {
   const ANIMATION_MILLI_SECONDS = config.animationTime * 1000;
   const USE_LOCAL_PATH = config.useLocalPath || false;
   const LOCAL_MEDIA_PATH = config.mediaRoot;
+  const EASE_FUNC = scaleStyles[parseInt(config.scaleStyle, 10) - 1];
+  console.log('#####', EASE_FUNC)
 
   const toggleDialogOpen = React.useCallback(() => {
     setConfigDialogOpen(configDialogOpen => !configDialogOpen);
@@ -315,12 +326,12 @@ function Slide3D(props) {
     const id = event.target.id;
     setCurrentPlayingId(id)
   }, [])
-  
+
   const onPause = React.useCallback((event) => {
     console.log('event: play paused', event.target.id);
     setCurrentPlayingId(null)
   }, [])
-  
+
   const onEnded = React.useCallback((event) => {
     console.log('event: play end',event.target.id)
     const playEndPlayerId = event.target.id;
@@ -416,14 +427,14 @@ function Slide3D(props) {
       })
     }
   }, [
-    config.autoPlay, 
-    config.startWithStacked, 
-    config.radius, 
-    db, 
-    itemsRef, 
-    onEnded, 
-    onPause, 
-    onPlay, 
+    config.autoPlay,
+    config.startWithStacked,
+    config.radius,
+    db,
+    itemsRef,
+    onEnded,
+    onPause,
+    onPlay,
     runInitialAnimation
   ])
 
@@ -497,7 +508,7 @@ function Slide3D(props) {
       const isAlreadyScaleUp = /scale(.*)/.test(container.style.transform)
       console.log('event: ',container.style.transform, isAlreadyScaleUp, config, config.videoScale)
       if(isAlreadyScaleUp) return;
-      container.style.transition = `${ANIMATION_SECONDS}s`;
+      container.style.transition = `${ANIMATION_SECONDS}s ${EASE_FUNC}`;
       container.style.transform += `scale(${config.videoScale})`;
       new Audio(audioScaleUp).play();
     })
@@ -514,7 +525,7 @@ function Slide3D(props) {
       }, ANIMATION_MILLI_SECONDS)
       // container.addEventListener('transitionend', resolvePromise);
       isLastItem && new Audio(audioScaleDown).play();
-      container.style.transition = `${ANIMATION_SECONDS}s`;
+      container.style.transition = `${ANIMATION_SECONDS}s ${EASE_FUNC}`;
       container.style.transform = container.style.transform.replace(/scale(.*)/, '');
     })
   }, [ANIMATION_MILLI_SECONDS, ANIMATION_SECONDS])
@@ -619,13 +630,13 @@ function Slide3D(props) {
     await scaleUp(videoContainer, targetId);
     setUnderTransition(false);
   }, [
-    currentScaledUpId, 
+    currentScaledUpId,
     enableAutoRotate,
-    disableAutoRotate, 
-    moveFront, 
-    pauseById, 
-    playById, 
-    scaleDown, 
+    disableAutoRotate,
+    moveFront,
+    pauseById,
+    playById,
+    scaleDown,
     scaleUp,
     setStandby,
     underTransition,
@@ -661,7 +672,7 @@ function Slide3D(props) {
   React.useEffect(() => {
     parentRef.current.onpointerdown = (e) => {
       clearInterval(timerRef.current);
-      e = e || window.event; 
+      e = e || window.event;
       startXY.current.x = e.clientX;
       startXY.current.y = e.clientY;
       parentRef.current.onpointermove = (e) => {
@@ -745,13 +756,13 @@ function Slide3D(props) {
         ref={dragRef}
         transitionType="rotate"
         moveUpward={config.moveUpward}
-      > 
-        <SpinContainer 
+      >
+        <SpinContainer
           ref={spinRef}
           stackOpacity={config.stackOpacity}
           autoRotate={config.autoRotate}
           animationPaused={animationPaused}
-          width={config.idleVideoWidth} 
+          width={config.idleVideoWidth}
           height={idleVideoHeight}
           rotationTime={config.rotationTime}
         >
@@ -775,8 +786,8 @@ function Slide3D(props) {
               >
               </Item>
               <ItemMirror
-                playsinline 
-                autoplay 
+                playsinline
+                autoplay
                 id={i}
                 ref={el => itemMirrorsRef.current[i] = el}
                 gap={reflectionGap}
