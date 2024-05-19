@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import SetRotationSpeed from './Config/SetRotationSpeed';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SettingsIcon from '@mui/icons-material/Settings';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import CloseIcon from '@mui/icons-material/Close';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import PauseCircleFilledIcon from '@mui/icons-material/PauseCircleFilled';
 
@@ -49,6 +51,22 @@ const CustomSettingIcon = styled(SettingsIcon)`
   z-index: 9999;
   opacity: 0.1;
 `
+const CustomFullScreenIcon = styled(FullscreenIcon)`
+  position: absolute;
+  bottom: -160px;
+  right: 100px;
+  margin: 10px;
+  z-index: 9999;
+  opacity: 0.1;
+`
+const CustomCloseIcon = styled(CloseIcon)`
+  position: absolute;
+  bottom: -160px;
+  right: 30px;
+  margin: 10px;
+  z-index: 9999;
+  opacity: 0.1;
+`
 const CustomPlayIcon = styled(PlayCircleFilledIcon)`
   display: ${props => !props.show && 'none !important'};
   position: absolute;
@@ -68,6 +86,14 @@ const CustomPauseIcon = styled(PauseCircleFilledIcon)`
   opacity: 0.2;
 `
 const CLASS_FOR_POINTER_EVENT_FREE = 'buttonClass';
+
+const toggleScreenSize = () => {
+  window.electron.ipcRenderer.sendMessage('toggleScreenSize');
+}
+
+const quitApp = () => {
+  window.electron.ipcRenderer.sendMessage('quitApp');
+}
 
 const RightSide = (props) => {
   const {
@@ -102,15 +128,15 @@ const RightSide = (props) => {
           show={config.useTitleBar}
         >
           <SetRotationSpeed
-            className={CLASS_FOR_POINTER_EVENT_FREE} 
+            className={CLASS_FOR_POINTER_EVENT_FREE}
             updateConfig={updateConfig}
             config={config}
           ></SetRotationSpeed>
           {db.map((item, i) => (
-            <Button 
-              key={item.id} 
-              id={i} 
-              className={CLASS_FOR_POINTER_EVENT_FREE} 
+            <Button
+              key={item.id}
+              id={i}
+              className={CLASS_FOR_POINTER_EVENT_FREE}
               fontSize={config.buttonFontSize}
               ref={el => buttonsRef.current[i] = el}
               onClick={onClickButton}
@@ -131,25 +157,35 @@ const RightSide = (props) => {
             className={CLASS_FOR_POINTER_EVENT_FREE}
             onClick={toggleDialogOpen}
           ></CustomSettingIcon>
+          <CustomFullScreenIcon
+            fontSize='large'
+            className={CLASS_FOR_POINTER_EVENT_FREE}
+            onClick={toggleScreenSize}
+          ></CustomFullScreenIcon>
+          <CustomCloseIcon
+            fontSize='large'
+            className={CLASS_FOR_POINTER_EVENT_FREE}
+            onClick={quitApp}
+          ></CustomCloseIcon>
           {config.startWithStacked ? (
-            <Button 
+            <Button
               style={{
-                color: 'grey', 
-                opacity:0.2, 
+                color: 'grey',
+                opacity:0.2,
                 fontSize: '20px',
               }}
               onClick={unFoldPlayer}
               disabled={activeIdState !== null}
             >Standby</Button>
           ):(
-            <StandbyButton 
-              className={CLASS_FOR_POINTER_EVENT_FREE} 
+            <StandbyButton
+              className={CLASS_FOR_POINTER_EVENT_FREE}
               onClick={setStandby}
               disabled={standbyBtnDisabled}
             >Standby</StandbyButton>
           )}
           {mirrorErr && (
-            <Button 
+            <Button
               className={CLASS_FOR_POINTER_EVENT_FREE}
               style={{color: 'red', opacity:1, fontSize: '15px'}}
               onClick={mirrorPlayer}
@@ -165,7 +201,7 @@ const RightSide = (props) => {
             show={!config.useTitleBar}
             className={CLASS_FOR_POINTER_EVENT_FREE}
           ></CustomPlayIcon>
-          ):( 
+          ):(
           <CustomPauseIcon
             fontSize="large"
             show={!config.useTitleBar}

@@ -42,6 +42,23 @@ ipcMain.on('showOpenDialog', async (event, dialogConfig) => {
   event.reply('showOpenDialog', choosed);
 });
 
+ipcMain.on('toggleScreenSize', () => {
+
+})
+
+ipcMain.on('quitApp', async () => {
+  const buttons = ['Yes', 'No'];
+  const answer = await dialog.showMessageBox({
+    type: 'question',
+    title: 'Confirm',
+    message: 'Quit App',
+    buttons
+  });
+  if (buttons[answer.response] === 'Yes') {
+    app.quit();
+  }
+})
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
