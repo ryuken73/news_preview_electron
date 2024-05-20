@@ -25,7 +25,7 @@ const defaultConfig = {
   animationTime: 0.5,
   rotationTime: 60,
   rotationTimeLast: 15,
-  useLocalPath: false,
-  mediaRoot: 'd:/project/002.node/touch_config_server/media'
+  useLocalPath: true,
+  mediaRoot: 'd:/touch_config/media'
 }
 export default defaultConfig
