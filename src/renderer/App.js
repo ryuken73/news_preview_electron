@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import Slide3D from './Components/Slide3D';
 import TinderCards from './Components/TinderCards';
+import GridCards from './Components/GridCards';
 
 const Container = styled.div`
   background-color: #111;
@@ -26,8 +27,8 @@ const DEFAULT_DB = [
   { id: 6, title: '무장', src: 'd:/temp/5.mp4' },
   { id: 9, title: '한파', src: 'd:/temp/2.mp4' },
   { id: 8, title: '겨울', src: 'd:/temp/3.mp4' },
-  { id: 4, title: 'AA', src: 'd:/temp/6.mp4' },
-  { id: 5, title: 'BB', src: 'd:/temp/7.mp4' },
+  // { id: 4, title: 'AA', src: 'd:/temp/6.mp4' },
+  // { id: 5, title: 'BB', src: 'd:/temp/7.mp4' },
 ];
 
 const mode = process.env.NODE_ENV === 'development' ? 'dev' : 'prd';
@@ -71,7 +72,7 @@ const getAssetFromServer = async (options) => {
 };
 
 function App() {
-  const [mode, setMode] = React.useState('slide');
+  const [mode, setMode] = React.useState('grid');
   const containerRef = React.useRef();
   const [searchParams] = useSearchParams();
   const assetId = searchParams.get('assetId') || null;
@@ -111,6 +112,7 @@ function App() {
   return (
     <div className="App">
       <Container ref={containerRef}>
+        {mode === 'grid' && <GridCards db={db} />}
         {mode === 'tinder' && <TinderCards db={db} />}
         {mode === 'slide' && (
           <Slide3D
