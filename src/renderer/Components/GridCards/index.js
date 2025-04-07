@@ -34,7 +34,6 @@ const CustomButton = styled.button`
   position: absolute;
   bottom: 20px;
   right: 20px;
-  /* z-index: 100; */
 `
 const Item = styled.video`
   position: absolute;
@@ -67,6 +66,7 @@ function GridCards(props) {
 
   const videoContaiersRef = React.useRef([]);
   const itemsRef = React.useRef([]);
+  const lastZindex = React.useRef(1);
 
   console.log('activeIDState', activeIdState)
   const LOCAL_MEDIA_PATH = config.mediaRoot;
@@ -101,7 +101,9 @@ function GridCards(props) {
     setInTransition(true);
     setZindexes((zIndexes) => {
       const newArray = [...zIndexes];
-      newArray[e.target.id] = 99;
+      const nextZindex = lastZindex.current + 1
+      newArray[e.target.id] = nextZindex;
+      lastZindex.current = nextZindex;
       return newArray;
     })
     setActiveIdState(e.target.id);
@@ -121,10 +123,13 @@ function GridCards(props) {
     console.log('button clicked')
     setInTransition(true)
     e.stopPropagation();
+    const {id} = e.target;
+    const currentPlayer = itemsRef.current[id];
+    currentPlayer.pause();
     const resetZindexes = (event) => {
       console.log('reset zindex event:', event)
       if (event.propertyName === 'transform') {
-        setZindexes(new Array(db.length || 4));
+        // setZindexes(new Array(db.length || 4));
         setInTransition(false)
       }
     }
