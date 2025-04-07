@@ -21,7 +21,7 @@ const VideoContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 1s;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: ${props => props.zIndex};
   /* z-index: ${(props) => props.isActive && 99}; */
   transform: ${(props) =>
