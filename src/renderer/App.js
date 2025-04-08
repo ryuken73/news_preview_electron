@@ -23,10 +23,10 @@ const DEFAULT_DB = [
   // {id: 6, title: '무장', src: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4'},
   // {id: 4, title: 'AA', src: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4'},
   // {id: 5, title: 'BB', src: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4'}
-  { id: 7, title: '원석진', src: 'd:/temp/4.mp4' },
-  { id: 6, title: '무장', src: 'd:/temp/5.mp4' },
-  { id: 9, title: '한파', src: 'd:/temp/2.mp4' },
-  { id: 8, title: '겨울', src: 'd:/temp/3.mp4' },
+  { id: 7, title: '당일도 햄버거집 회동', src: 'd:/temp/4.mp4' },
+  { id: 6, title: '대왕고래 첫 시추', src: 'd:/temp/5.mp4' },
+  { id: 9, title: '얼굴없는 천사', src: 'd:/temp/2.mp4' },
+  { id: 8, title: '수뇌부 영장', src: 'd:/temp/3.mp4' },
   // { id: 4, title: 'AA', src: 'd:/temp/6.mp4' },
   // { id: 5, title: 'BB', src: 'd:/temp/7.mp4' },
 ];
