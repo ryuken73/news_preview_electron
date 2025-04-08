@@ -130,6 +130,9 @@ function GridCards(props) {
   const onClickItem = React.useCallback((e) => {
     console.log('onClickItem', e.target.id, e.target.style);
     const {id} = e.target;
+    if(id === ''){
+      return;
+    }
     const currentPlayer = itemsRef.current[id];
     if (id === activeIdState) {
       if(currentPlayer.paused){
@@ -161,14 +164,14 @@ function GridCards(props) {
   }, []);
 
   const resetActiveId = React.useCallback((e) => {
-    console.log('button clicked')
     setInTransition(true)
     e.stopPropagation();
     const {id} = e.target;
+    console.log('button clicked', e.target)
     const currentPlayer = itemsRef.current[id];
     currentPlayer.pause();
     const resetZindexes = (event) => {
-      console.log('reset zindex event:', event)
+      console.log('reset zindex event:', event);
       if (event.propertyName === 'transform') {
         // setZindexes(new Array(db.length || 4));
         setInTransition(false)
@@ -227,7 +230,7 @@ function GridCards(props) {
             </TitleContainer>
           </VideoContainer>
         ))}
-        <QuitButton onClick={quitApp}></QuitButton>
+        <QuitButton onClick={quitApp} />
       </Container>
     </div>
   );
