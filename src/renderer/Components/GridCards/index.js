@@ -60,7 +60,8 @@ const Title = styled.div`
   background-color: rgba(0, 0, 0, 0.4);
   padding: 10px;
   box-sizing: border-box;
-  font-size: 50px;
+  /* font-size: 50px; */
+  font-size: ${props => `${props.fontSize}px`||'50px'};
   padding-top: 20px;
   padding-bottom: 20px;
 `
@@ -115,6 +116,7 @@ function GridCards(props) {
   console.log('activeIDState', activeIdState)
   const LOCAL_MEDIA_PATH = config.mediaRootGrid;
   const USE_LOCAL_PATH = config.useLocalPathGrid || false;
+  const TITLE_FONT_SIZE = config.titleFontSizeGrid || 50;
   const REG_PATTERN = /http:\/\/.*\/(\d{8}\/.*\.mp4)/;
   const toLocalPath = React.useCallback(
     (remoteSrc) => {
@@ -251,6 +253,7 @@ function GridCards(props) {
             {item.title !== undefined && item.title.length !== 0 && (
               <TitleContainer>
                 <Title
+                  fontSize={TITLE_FONT_SIZE}
                 >{item.title}</Title>
               </TitleContainer>
             )}
