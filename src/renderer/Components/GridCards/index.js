@@ -36,11 +36,12 @@ const CustomButton = styled.div`
   position: absolute;
   bottom: 20px;
   right: 40px;
-  font-size: 10px;
+  font-size: 20px;
   background: transparent;
   backdrop-filter: blur(1px);
   padding: 5px;
   z-index: 100;
+  opacity: 0.5;
 `
 const TitleContainer = styled.div`
   position: absolute;
@@ -54,6 +55,7 @@ const Title = styled.div`
   /* backdrop-filter: blur(5px); */
   padding: 10px;
   box-sizing: border-box;
+  font-size: 50px;
 `
 const OpenDevTool = styled.button`
   position: absolute;
@@ -225,9 +227,11 @@ function GridCards(props) {
               </CustomButton>
             )}
             {/* <OpenDevTool onClick={openDevTools}>open</OpenDevTool> */}
-            <TitleContainer>
-              <Title>{item.title}</Title>
-            </TitleContainer>
+            {item.title !== undefined && item.title.length !== 0 && (
+              <TitleContainer>
+                <Title>{item.title}</Title>
+              </TitleContainer>
+            )}
           </VideoContainer>
         ))}
         <QuitButton onClick={quitApp} />
