@@ -9,10 +9,14 @@ import defaultConfig from '../Slide3D/Config/defaultConfig';
 const Container = styled.div`
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  grid-gap: 15px;
-  padding: 10px;
+  /* grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr; */
+  grid-template-columns: repeat(2, 49%);
+  grid-template-rows: repeat(2, 48%);
+  justify-content: space-evenly;
+  align-content: space-evenly;
+  /* grid-gap: 20px; */
+  /* padding: 20px; */
   box-sizing: border-box;
   width: 100vw;
   height: 100vh;
@@ -28,7 +32,8 @@ const VideoContainer = styled.div`
   /* z-index: ${(props) => props.isActive && 99}; */
   transform: ${(props) =>
     props.isActive &&
-    `translate(${props.translateFactor[0] * 50}%, ${props.translateFactor[1] * 50}%) scale(2.1)`};
+    // `translate(${props.translateFactor[0] * 50}%, ${props.translateFactor[1] * 50}%) scaleY(2.07) scaleX(2.1)`};
+    `translate(${props.translateFactor[0] * 50}%, ${props.translateFactor[1] * 50}%) scaleY(2.15) scaleX(2.15)`};
   /* transform: ${(props) => props.isActive && 'scale(2.05)'}; */
   /* transform-origin: top left; */
 `;
@@ -36,11 +41,12 @@ const CustomButton = styled.div`
   position: absolute;
   bottom: 20px;
   right: 40px;
-  font-size: 10px;
+  font-size: 20px;
   background: transparent;
   backdrop-filter: blur(1px);
   padding: 5px;
   z-index: 100;
+  opacity: 0.5;
 `
 const TitleContainer = styled.div`
   position: absolute;
@@ -50,12 +56,13 @@ const TitleContainer = styled.div`
 `
 const Title = styled.div`
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.4);
   /* backdrop-filter: blur(5px); */
   padding: 10px;
   box-sizing: border-box;
-  padding-top: 30px;
-  padding-bottom: 30px;
+  font-size: 50px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 `
 const OpenDevTool = styled.button`
   position: absolute;
@@ -67,13 +74,14 @@ const Item = styled.video`
   top: 0;
   left: 0;
   object-fit: cover;
-  width: 100%;
   height: 100%;
-  border-radius: 10px;
+  width: 100%;
+  /* padding: 10px; */
+  border-radius: 30px;
   line-height: 200px;
   font-size: 50px;
   text-align: center;
-  box-sizing: border-box;
+  /* box-sizing: border-box; */
   /* outline: 2px rgba(189, 54, 54, 0.6) solid; */
 `;
 const QuitButton = styled.div`
@@ -227,9 +235,11 @@ function GridCards(props) {
               </CustomButton>
             )}
             {/* <OpenDevTool onClick={openDevTools}>open</OpenDevTool> */}
-            <TitleContainer>
-              <Title>{item.title}</Title>
-            </TitleContainer>
+            {item.title !== undefined && item.title.length !== 0 && (
+              <TitleContainer>
+                <Title>{item.title}</Title>
+              </TitleContainer>
+            )}
           </VideoContainer>
         ))}
         <QuitButton onClick={quitApp} />
