@@ -33,7 +33,7 @@ const VideoContainer = styled.div`
   transform: ${(props) =>
     props.isActive &&
     // `translate(${props.translateFactor[0] * 50}%, ${props.translateFactor[1] * 50}%) scaleY(2.07) scaleX(2.1)`};
-    `translate(${props.translateFactor[0] * 50}%, ${props.translateFactor[1] * 50}%) scaleY(2.15) scaleX(2.15)`};
+    `translate(${props.translateFactor[0] * 50.6}%, ${props.translateFactor[1] * 51.4}%) scale(2.15)`};
   /* transform: ${(props) => props.isActive && 'scale(2.05)'}; */
   /* transform-origin: top left; */
 `;
