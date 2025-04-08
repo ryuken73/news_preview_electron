@@ -22,8 +22,15 @@ const VideoContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
   z-index: ${props => props.zIndex};
+  /* filter: ${props => !props.isActive && 'grayscale()'}; */
+  /* filter: ${props => !props.isActive && 'sepia(60%)'}; */
+  filter: ${props => !props.isActive && 'saturate(20%)'};
+  /* filter: ${props => !props.isActive && 'brightness(50%)'}; */
+  /* filter: ${props => !props.isActive && 'invert(30%)'}; */
+  /* filter: ${props => !props.isActive && 'hue-rotate(120deg)'}; */
+  /* filter: ${props => !props.isActive && 'contrast(60%)'}; */
   transform: ${(props) =>
     props.isActive &&
     `translate(${props.translateFactor[0] * 50.6}%, ${props.translateFactor[1] * 51.4}%) scale(2.15)`};
