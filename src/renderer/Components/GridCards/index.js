@@ -3,6 +3,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import backImage from '../../assets/images/background.jpg';
+import useLocalStorage from '../../hooks/useLocalStorage';
 import defaultConfig from '../Slide3D/Config/defaultConfig';
 
 const Container = styled.div`
@@ -30,10 +31,19 @@ const VideoContainer = styled.div`
   /* transform: ${(props) => props.isActive && 'scale(2.05)'}; */
   /* transform-origin: top left; */
 `;
-const CustomButton = styled.button`
+const CustomButton = styled.div`
   position: absolute;
   bottom: 20px;
-  right: 20px;
+  right: 40px;
+  font-size: 10px;
+  background: transparent;
+  backdrop-filter: blur(1px);
+  padding: 5px;
+`
+const OpenDevTool = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
 `
 const Item = styled.video`
   position: absolute;
@@ -59,6 +69,7 @@ const TRNSLATE_FACTOR = [
 
 function GridCards(props) {
   const { db } = props;
+  const [storedValue, saveToLocalStorage] = useLocalStorage('slide3D', INITIAL_CONFIG);
   const [zIndexes, setZindexes] = React.useState(new Array(db.length || 4));
   const [activeIdState, setActiveIdState] = React.useState(null);
   const [inTransition, setInTransition] = React.useState(false);
@@ -85,6 +96,12 @@ function GridCards(props) {
     },
     [LOCAL_MEDIA_PATH, REG_PATTERN],
   );
+
+  // initialize config from localStorage
+  React.useEffect(() => {
+    console.log('load from localStorage to config:', storedValue)
+    setConfig(storedValue)
+  }, [storedValue])
 
   const onClickItem = React.useCallback((e) => {
     console.log('onClickItem', e.target.id, e.target.style);
@@ -138,6 +155,11 @@ function GridCards(props) {
     });
     setActiveIdState(null);
   }, []);
+
+  // const openDevTools = React.useCallback(() => {
+  //   window.electron.ipcRenderer.sendMessage('openDevtools');
+  // }, [])
+
   return (
     <div>
       <Container>
@@ -168,9 +190,10 @@ function GridCards(props) {
                 id={i}
                 onClick={resetActiveId}
               >
-                restore
+                R
               </CustomButton>
             )}
+            {/* <OpenDevTool onClick={openDevTools}>open</OpenDevTool> */}
           </VideoContainer>
         ))}
       </Container>
