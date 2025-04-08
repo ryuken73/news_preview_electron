@@ -7,6 +7,7 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import defaultConfig from '../Slide3D/Config/defaultConfig';
 
 const Container = styled.div`
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -52,6 +53,7 @@ const Title = styled.div`
   background-color: rgba(0, 0, 0, 0.6);
   /* backdrop-filter: blur(5px); */
   padding: 10px;
+  box-sizing: border-box;
 `
 const OpenDevTool = styled.button`
   position: absolute;
@@ -72,6 +74,15 @@ const Item = styled.video`
   box-sizing: border-box;
   /* outline: 2px rgba(189, 54, 54, 0.6) solid; */
 `;
+const QuitButton = styled.div`
+  position: absolute;
+  transform: translate(-50%, -50%);
+  min-height: 20px;
+  min-width: 20px;
+  background-color: transparent;
+  left: 50%;
+  top: 50%;
+`
 const INITIAL_CONFIG = defaultConfig;
 const TRNSLATE_FACTOR = [
   [1, 1],
@@ -169,6 +180,10 @@ function GridCards(props) {
     setActiveIdState(null);
   }, []);
 
+  const quitApp = React.useCallback(() => {
+    window.electron.ipcRenderer.sendMessage('quitApp');
+  }, [])
+
   // const openDevTools = React.useCallback(() => {
   //   window.electron.ipcRenderer.sendMessage('openDevtools');
   // }, [])
@@ -212,6 +227,7 @@ function GridCards(props) {
             </TitleContainer>
           </VideoContainer>
         ))}
+        <QuitButton onClick={quitApp}></QuitButton>
       </Container>
     </div>
   );
