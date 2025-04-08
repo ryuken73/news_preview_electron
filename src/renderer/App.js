@@ -72,7 +72,7 @@ const getAssetFromServer = async (options) => {
 };
 
 function App() {
-  const [mode, setMode] = React.useState('grid');
+  const [appMode, setMode] = React.useState('grid');
   const containerRef = React.useRef();
   const [searchParams] = useSearchParams();
   const assetId = searchParams.get('assetId') || null;
@@ -100,6 +100,10 @@ function App() {
     // });
     // setDB(sources);
     // setCurrentAssetId(assetId);
+    window.electron.ipcRenderer.getMode((appMode) => {
+      console.log(appMode);
+      setMode(appMode)
+    });
     await setDBFromServer('latestNewsPreview');
     const assetList = await getAssetFromServer({
       cmd: 'newsPreviewList'
@@ -107,14 +111,14 @@ function App() {
     if(assetList !== null){
       setNewsPreviewList(assetList);
     }
-  }, []);
+  }, [setDBFromServer]);
 
   return (
     <div className="App">
       <Container ref={containerRef}>
-        {mode === 'grid' && <GridCards db={db} />}
-        {mode === 'tinder' && <TinderCards db={db} />}
-        {mode === 'slide' && (
+        {appMode === 'grid' && <GridCards db={db} />}
+        {appMode === 'tinder' && <TinderCards db={db} />}
+        {appMode === 'slide' && (
           <Slide3D
             db={db}
             parentRef={containerRef}

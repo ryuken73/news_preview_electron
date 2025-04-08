@@ -23,6 +23,11 @@ class AppUpdater {
   }
 }
 
+const args = process.argv;
+const modeIndex = args.indexOf("--mode");
+const mode = modeIndex !== -1 && args[modeIndex + 1] ? args[modeIndex + 1]:'grid'
+console.log(mode)
+
 const isDevelopment =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
@@ -145,6 +150,10 @@ const createWindow = async () => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
   });
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow?.webContents.send('set-mode', mode)
+  })
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line

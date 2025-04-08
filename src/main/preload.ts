@@ -6,6 +6,9 @@ export type Channels = 'ipc-example';
 
 const electronHandler = {
   ipcRenderer: {
+    getMode: (callback) => {
+      ipcRenderer.on('set-mode', (event, mode) => callback(mode));
+    },
     sendMessage(channel: Channels, ...args: unknown[]) {
       ipcRenderer.send(channel, ...args);
     },
