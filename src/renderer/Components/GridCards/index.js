@@ -15,7 +15,7 @@ const Container = styled.div`
   box-sizing: border-box;
   width: 100vw;
   height: 100vh;
-  background-image: url(${backImage});
+  /* background-image: url(${backImage}); */
   background-size: cover;
 `;
 const VideoContainer = styled.div`
@@ -57,7 +57,7 @@ const Item = styled.video`
   font-size: 50px;
   text-align: center;
   box-sizing: border-box;
-  outline: 2px rgba(189, 54, 54, 0.6) solid;
+  /* outline: 2px rgba(189, 54, 54, 0.6) solid; */
 `;
 const INITIAL_CONFIG = defaultConfig;
 const TRNSLATE_FACTOR = [
