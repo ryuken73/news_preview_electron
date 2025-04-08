@@ -26,7 +26,7 @@ const DEFAULT_DB = [
   { id: 7, title: '당일도 햄버거집 회동', src: 'd:/temp/4.mp4' },
   { id: 6, title: '대왕고래 첫 시추', src: 'd:/temp/5.mp4' },
   { id: 9, title: '얼굴없는 천사', src: 'd:/temp/2.mp4' },
-  { id: 8, title: '수뇌부 영장', src: 'd:/temp/3.mp4' },
+  { id: 8, title: '', src: 'd:/temp/3.mp4' },
   // { id: 4, title: 'AA', src: 'd:/temp/6.mp4' },
   // { id: 5, title: 'BB', src: 'd:/temp/7.mp4' },
 ];
@@ -116,7 +116,14 @@ function App() {
   return (
     <div className="App">
       <Container ref={containerRef}>
-        {appMode === 'grid' && <GridCards db={db} />}
+        {appMode === 'grid' && (
+          <GridCards 
+            db={db} 
+            currentAssetId={currentAssetId}
+            newsPreviewList={newsPreviewList}
+            setDBFromServer={setDBFromServer}
+          />
+        )}
         {appMode === 'tinder' && <TinderCards db={db} />}
         {appMode === 'slide' && (
           <Slide3D

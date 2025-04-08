@@ -3,8 +3,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import backImage from '../../assets/images/background.jpg';
+import ConfigDialog from './Config/ConfigDialog';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import defaultConfig from '../Slide3D/Config/defaultConfig';
+import defaultConfig from './Config/defaultConfig';
 
 const Container = styled.div`
   position: relative;
@@ -80,14 +81,14 @@ const Item = styled.video`
   font-size: 50px;
   text-align: center;
 `;
-const QuitButton = styled.div`
+const ConfigButton = styled.div`
   position: absolute;
-  transform: translate(-50%, -50%);
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
   min-height: 20px;
   min-width: 20px;
-  background-color: transparent;
-  left: 50%;
-  top: 50%;
+  background-color: blue;
 `
 const INITIAL_CONFIG = defaultConfig;
 const TRNSLATE_FACTOR = [
@@ -98,11 +99,13 @@ const TRNSLATE_FACTOR = [
 ];
 
 function GridCards(props) {
-  const { db } = props;
+  const { db, setDBFromServer, newsPreviewList, currentAssetId } = props;
   const [storedValue, saveToLocalStorage] = useLocalStorage('slide3D', INITIAL_CONFIG);
   const [zIndexes, setZindexes] = React.useState(new Array(db.length || 4));
   const [activeIdState, setActiveIdState] = React.useState(null);
   const [inTransition, setInTransition] = React.useState(false);
+
+  const [configDialogOpen, setConfigDialogOpen] = React.useState(false);
   const [config, setConfig] = React.useState(INITIAL_CONFIG);
 
   const videoContaiersRef = React.useRef([]);
@@ -110,8 +113,8 @@ function GridCards(props) {
   const lastZindex = React.useRef(1);
 
   console.log('activeIDState', activeIdState)
-  const LOCAL_MEDIA_PATH = config.mediaRoot;
-  const USE_LOCAL_PATH = config.useLocalPath || false;
+  const LOCAL_MEDIA_PATH = config.mediaRootGrid;
+  const USE_LOCAL_PATH = config.useLocalPathGrid || false;
   const REG_PATTERN = /http:\/\/.*\/(\d{8}\/.*\.mp4)/;
   const toLocalPath = React.useCallback(
     (remoteSrc) => {
@@ -132,6 +135,23 @@ function GridCards(props) {
     console.log('load from localStorage to config:', storedValue)
     setConfig(storedValue)
   }, [storedValue])
+
+  const toggleDialogOpen = React.useCallback(() => {
+    setConfigDialogOpen(configDialogOpen => !configDialogOpen);
+  }, [])
+
+  const updateConfig = React.useCallback((key, value, saveLocal=true) => {
+    setConfig(config => {
+      const newConfig = {
+        ...config,
+        [key]: value
+      }
+      if(saveLocal){
+        saveToLocalStorage(newConfig);
+      }
+      return newConfig;
+    })
+  }, [saveToLocalStorage])
 
   const onClickItem = React.useCallback((e) => {
     console.log('onClickItem', e.target.id, e.target.style);
@@ -189,9 +209,6 @@ function GridCards(props) {
     setActiveIdState(null);
   }, []);
 
-  const quitApp = React.useCallback(() => {
-    window.electron.ipcRenderer.sendMessage('quitApp');
-  }, [])
 
   // const openDevTools = React.useCallback(() => {
   //   window.electron.ipcRenderer.sendMessage('openDevtools');
@@ -239,7 +256,20 @@ function GridCards(props) {
             )}
           </VideoContainer>
         ))}
-        <QuitButton onClick={quitApp} />
+        {/* <QuitButton onClick={quitApp} /> */}
+        <ConfigButton onClick={toggleDialogOpen} />
+        <ConfigDialog
+          configDialogOpen={configDialogOpen}
+          toggleDialogOpen={toggleDialogOpen}
+          config={config}
+          setConfig={setConfig}
+          updateConfig={updateConfig}
+          saveToLocalStorage={saveToLocalStorage}
+          defaultConfig={INITIAL_CONFIG}
+          currentAssetId={currentAssetId}
+          newsPreviewList={newsPreviewList}
+          setDBFromServer={setDBFromServer}
+        ></ConfigDialog>
       </Container>
     </div>
   );
