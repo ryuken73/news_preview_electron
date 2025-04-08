@@ -54,6 +54,8 @@ const Title = styled.div`
   /* backdrop-filter: blur(5px); */
   padding: 10px;
   box-sizing: border-box;
+  padding-top: 30px;
+  padding-bottom: 30px;
 `
 const OpenDevTool = styled.button`
   position: absolute;
