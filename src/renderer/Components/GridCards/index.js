@@ -30,14 +30,16 @@ const VideoContainer = styled.div`
 `;
 const CustomButton = styled.div`
   position: absolute;
-  bottom: 20px;
+  bottom: 35px;
   right: 40px;
   font-size: 20px;
-  background: transparent;
+  background: black;
+  border-radius: 5px;
   backdrop-filter: blur(1px);
   padding: 5px;
   z-index: 100;
   opacity: 0.5;
+  width: 30px;
 `
 const TitleContainer = styled.div`
   position: absolute;
@@ -224,7 +226,8 @@ function GridCards(props) {
             {/* <OpenDevTool onClick={openDevTools}>open</OpenDevTool> */}
             {item.title !== undefined && item.title.length !== 0 && (
               <TitleContainer>
-                <Title>{item.title}</Title>
+                <Title
+                >{item.title}</Title>
               </TitleContainer>
             )}
           </VideoContainer>
