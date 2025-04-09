@@ -26,9 +26,10 @@ const VideoContainer = styled.div`
   height: 100%;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
   z-index: ${props => props.zIndex};
+  filter: ${props => !props.isActive && `${props.videoFilter.type}(${props.videoFilter.value}%)`};
   /* filter: ${props => !props.isActive && 'grayscale()'}; */
   /* filter: ${props => !props.isActive && 'sepia(60%)'}; */
-  filter: ${props => !props.isActive && 'saturate(20%)'};
+  /* filter: ${props => !props.isActive && 'saturate(20%)'}; */
   /* filter: ${props => !props.isActive && 'brightness(50%)'}; */
   /* filter: ${props => !props.isActive && 'invert(30%)'}; */
   /* filter: ${props => !props.isActive && 'hue-rotate(120deg)'}; */
@@ -119,6 +120,8 @@ function GridCards(props) {
   const USE_LOCAL_PATH = config.useLocalPathGrid || false;
   const TITLE_FONT_SIZE = config.titleFontSizeGrid || 50;
   const TITLE_FONT_FAMILY = config.titleFontFamilyGrid || 'SUITE';
+  const VIDEO_FILTER_TYPE = config.videoFilterTypeGrid || 'saturate';
+  const VIDEO_FILTER_VALUE = config.videoFilterValueGrid || 20;
   const REG_PATTERN = /http:\/\/.*\/(\d{8}\/.*\.mp4)/;
   const toLocalPath = React.useCallback(
     (remoteSrc) => {
@@ -231,6 +234,7 @@ function GridCards(props) {
             onTransitionEnd={onTransitionEnd}
             onClick={onClickItem}
             zIndex={zIndexes[i]}
+            videoFilter={{ type: VIDEO_FILTER_TYPE, value: VIDEO_FILTER_VALUE }}
           >
             <Item
               crossOrigin="anonymous"

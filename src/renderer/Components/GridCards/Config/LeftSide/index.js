@@ -4,6 +4,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 
 import SetTitleFontFamily from './SetTitleFontFamily';
 import SetTitleFontSize from './SetTitleFontSize';
+import SetVideoFilterType from './SetVideoFilterType';
+import SetVideoFilterValue from './SetVideoFilterValue';
 
 function LeftSide(props) {
   const {config, updateConfig, runInitialAnimation} = props;
@@ -15,6 +17,12 @@ function LeftSide(props) {
       </DialogContentText>
       <DialogContentText sx={{ color: 'white' }}>
         <SetTitleFontSize config={config} updateConfig={updateConfig} />
+      </DialogContentText>
+      <DialogContentText sx={{ color: 'white' }}>
+        <SetVideoFilterType config={config} updateConfig={updateConfig} />
+      </DialogContentText>
+      <DialogContentText sx={{ color: 'white' }}>
+        <SetVideoFilterValue config={config} updateConfig={updateConfig} />
       </DialogContentText>
     </DialogContent>
   );
