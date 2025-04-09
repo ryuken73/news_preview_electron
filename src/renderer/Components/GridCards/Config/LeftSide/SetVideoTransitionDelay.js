@@ -5,18 +5,18 @@ import Slider from '@mui/material/Slider';
 import defaultConfig from '../defaultConfig';
 import CustomSpan from '../CustomSpan';
 
-const {videoFilterValueGrid:defaultValue} = defaultConfig;
+const {videoTransitionDelayGrid:defaultValue} = defaultConfig;
 
-function SetVideoFilterValue(props) {
+function SetVideoTransitionDelay(props) {
   const { config, updateConfig } = props;
-  const { videoFilterValueGrid = defaultValue } = config;
+  const { videoTransitionDelayGrid = defaultValue } = config;
   const onChange = React.useCallback((event) => {
       const { value } = event.target;
-      updateConfig('videoFilterValueGrid', value);
+      updateConfig('videoTransitionDelayGrid', value);
     },
     [updateConfig]
   );
-  const currentVaue = videoFilterValueGrid;
+  const currentVaue = videoTransitionDelayGrid;
   const isSame = defaultValue === currentVaue;
   return (
     <FormControl>
@@ -24,19 +24,20 @@ function SetVideoFilterValue(props) {
         sx={{ color: 'white' }}
         id="demo-row-radio-buttons-group-label"
       >
-        [ Video ]  Video Filter Value(%) : 
+        [ Video ]  Video Transition Delay(seconds) : 
         <CustomSpan isSame={isSame}>{currentVaue}</CustomSpan> ({defaultValue})
       </FormLabel>
       <Slider
         aria-label="swipeThreshold"
-        value={videoFilterValueGrid}
+        value={videoTransitionDelayGrid}
         onChange={onChange}
         min={0}
-        max={100}
+        step={0.1}
+        max={0.5}
         valueLabelDisplay="auto"
       />
     </FormControl>
   );
 }
 
-export default React.memo(SetVideoFilterValue);
+export default React.memo(SetVideoTransitionDelay);

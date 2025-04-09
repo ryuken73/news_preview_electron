@@ -6,6 +6,7 @@ import SetTitleFontFamily from './SetTitleFontFamily';
 import SetTitleFontSize from './SetTitleFontSize';
 import SetVideoFilterType from './SetVideoFilterType';
 import SetVideoFilterValue from './SetVideoFilterValue';
+import SetVideoTransitionDelay from './SetVideoTransitionDelay';
 
 function LeftSide(props) {
   const {config, updateConfig, runInitialAnimation} = props;
@@ -23,6 +24,9 @@ function LeftSide(props) {
       </DialogContentText>
       <DialogContentText sx={{ color: 'white' }}>
         <SetVideoFilterValue config={config} updateConfig={updateConfig} />
+      </DialogContentText>
+      <DialogContentText sx={{ color: 'white' }}>
+        <SetVideoTransitionDelay config={config} updateConfig={updateConfig} />
       </DialogContentText>
     </DialogContent>
   );

@@ -5,5 +5,6 @@ const defaultConfig = {
   titleFontFamilyGrid: 'SUITE',
   videoFilterTypeGrid: 'saturate',
   videoFilterValueGrid: 20,
+  videoTransitionDelayGrid: 0.2,
 }
 export default defaultConfig

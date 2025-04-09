@@ -30,6 +30,14 @@ const StyledSpan = styled.button`
   cursor: pointer;
   margin-left: 10px;
 `
+const QuitSpan = styled(StyledSpan)`
+  cursor: pointer;
+  margin-left: 30px;
+  background: maroon;
+  color: white;
+  font-size: 15px;
+  padding: 8px;
+`
 const Version = styled.span`
   margin-left: 10px;
   margin-right: 10px;
@@ -127,11 +135,11 @@ function ConfigDialog(props) {
           >
             Reload
           </StyledSpan>
-          <StyledSpan
+          <QuitSpan
             onClick={quitApp}
           >
             Quit
-          </StyledSpan>
+          </QuitSpan>
         </DialogTitle>
         <Container>
           <LeftSide config={config} updateConfig={updateConfig} runInitialAnimation={runInitialAnimation} />
