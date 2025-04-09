@@ -6,6 +6,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import Divider from '@mui/material/Divider';
 import LeftSide from './LeftSide';
+import RightSide from './RightSide';
 import version from '../../../version';
 
 const CustomDialog = styled(Dialog)`
@@ -133,6 +134,7 @@ function ConfigDialog(props) {
         <Container>
           <LeftSide config={config} updateConfig={updateConfig} runInitialAnimation={runInitialAnimation} />
           <Divider orientation="vertical" FlexItem />
+          <RightSide config={config} updateConfig={updateConfig} />
         </Container>
         <DialogActions>
           <Button sx={{ color: 'white' }} onClick={handleYes} autoFocus>
