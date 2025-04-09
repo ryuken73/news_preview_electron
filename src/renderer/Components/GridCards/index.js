@@ -68,6 +68,8 @@ const Title = styled.div`
   font-size: ${props => `${props.fontSize}px`||'50px'};
   padding-top: 20px;
   padding-bottom: 20px;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
 `
 const OpenDevTool = styled.button`
   position: absolute;
