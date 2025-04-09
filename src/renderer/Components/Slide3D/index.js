@@ -9,8 +9,8 @@ import audioScaleDown from '../../assets/audio/scaleDown.mp3';
 import vBarImage from '../../assets/images/vBar.png';
 import RightSide from './RightSide';
 import ConfigDialog from './Config/ConfigDialog';
-import SnowBackground from './SnowBackground';
-import RainBackground from './RainBackground';
+// import SnowBackground from './SnowBackground';
+// import RainBackground from './RainBackground';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import defaultConfig from './Config/defaultConfig';
 

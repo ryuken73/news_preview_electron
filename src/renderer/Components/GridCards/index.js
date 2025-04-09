@@ -60,7 +60,8 @@ const TitleContainer = styled.div`
 `
 const Title = styled.div`
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
+  /* background-color: rgba(0, 0, 0, 0.4); */
+  background-color: ${props => props.bgColor || 'rgba(0, 0, 0, 0.4)'};
   padding: 10px;
   box-sizing: border-box;
   /* font-size: 50px; */
@@ -121,6 +122,7 @@ function GridCards(props) {
   const USE_LOCAL_PATH = config.useLocalPathGrid || false;
   const TITLE_FONT_SIZE = config.titleFontSizeGrid || 50;
   const TITLE_FONT_FAMILY = config.titleFontFamilyGrid || 'SUITE';
+  const TITLE_BAR_COLOR = config.titleBarColorGrid || 'rgba(0, 0, 0, 0.4)';
   const VIDEO_FILTER_TYPE = config.videoFilterTypeGrid || 'saturate';
   const VIDEO_FILTER_VALUE = config.videoFilterValueGrid == undefined ? 20 : config.videoFilterValueGrid;
   const VIDEO_TRANSITION_DELAY = config.videoTransitionDelayGrid === undefined ? 0.2 : config.videoTransitionDelayGrid;
@@ -263,6 +265,7 @@ function GridCards(props) {
               <TitleContainer>
                 <Title
                   fontSize={TITLE_FONT_SIZE}
+                  bgColor={TITLE_BAR_COLOR}
                 >{item.title}</Title>
               </TitleContainer>
             )}

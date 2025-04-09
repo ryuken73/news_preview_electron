@@ -105,10 +105,10 @@
     "electron-log": "^4.4.8",
     "electron-updater": "^6.1.4",
     "react": "^18.2.0",
+    "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
     "react-rainfall": "^0.1.533",
     "react-router-dom": "^6.16.0",
-    "react-snowfall": "^2.1.0",
     "react-tinder-card": "^1.6.4",
     "styled-components": "^6.1.11"
   },
