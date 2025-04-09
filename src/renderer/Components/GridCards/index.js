@@ -3,6 +3,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import backImage from '../../assets/images/background.jpg';
+import audioScaleUp from '../../assets/audio/scaleUp.mp3';
+import audioScaleDown from '../../assets/audio/scaleDown.mp3';
 import ConfigDialog from './Config/ConfigDialog';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import defaultConfig from './Config/defaultConfig';
@@ -190,6 +192,7 @@ function GridCards(props) {
       return newArray;
     })
     setActiveIdState(e.target.id);
+    new Audio(audioScaleUp).play();
     },
     [activeIdState],
   );
@@ -220,6 +223,7 @@ function GridCards(props) {
       once: true,
     });
     setActiveIdState(null);
+    new Audio(audioScaleDown).play();
   }, []);
 
 
