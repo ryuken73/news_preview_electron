@@ -89,7 +89,7 @@ const ConfigButton = styled.div`
   transform: translate(50%, -50%);
   min-height: 20px;
   min-width: 20px;
-  background-color: blue;
+  background-color: transparent;
 `
 const INITIAL_CONFIG = defaultConfig;
 const TRNSLATE_FACTOR = [
