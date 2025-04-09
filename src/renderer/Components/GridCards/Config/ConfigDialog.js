@@ -37,7 +37,9 @@ const Version = styled.span`
   opacity: 0.6;
 `
 const StyledSelect = styled.select`
+  margin-right: 10px;
 `
+
 function ConfigDialog(props) {
   console.log(props)
   const {
@@ -51,7 +53,7 @@ function ConfigDialog(props) {
     runInitialAnimation,
     currentAssetId,
     newsPreviewList=[],
-    setDBFromServer
+    setDBFromServer,
   } = props;
 
   const handleYes = React.useCallback(() => {

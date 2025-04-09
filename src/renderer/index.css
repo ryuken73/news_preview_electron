@@ -47,6 +47,24 @@
   src: 
   url("./assets/fonts/SUITE-Heavy.otf") format('truetype');
 }
+@font-face {
+    font-family: 'SBAggroB';
+    src: url('./assets/fonts/SBAggroB.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Cafe24Ohsquare';
+    src: url('./assets/fonts/Cafe24Ohsquare.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'GongGothicMedium';
+    src: url('./assets/fonts/GongGothicMedium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 body {
   margin: 0;
   font-family: 'SUITE', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

@@ -8,6 +8,7 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import defaultConfig from './Config/defaultConfig';
 
 const Container = styled.div`
+  font-family: ${props => props.fontFamily};
   position: relative;
   display: grid;
   grid-template-columns: repeat(2, 49%);
@@ -92,6 +93,7 @@ const ConfigButton = styled.div`
   background-color: transparent;
 `
 const INITIAL_CONFIG = defaultConfig;
+
 const TRNSLATE_FACTOR = [
   [1, 1],
   [-1, 1],
@@ -105,9 +107,8 @@ function GridCards(props) {
   const [zIndexes, setZindexes] = React.useState(new Array(db.length || 4));
   const [activeIdState, setActiveIdState] = React.useState(null);
   const [inTransition, setInTransition] = React.useState(false);
-
-  const [configDialogOpen, setConfigDialogOpen] = React.useState(false);
   const [config, setConfig] = React.useState(INITIAL_CONFIG);
+  const [configDialogOpen, setConfigDialogOpen] = React.useState(false);
 
   const videoContaiersRef = React.useRef([]);
   const itemsRef = React.useRef([]);
@@ -117,6 +118,7 @@ function GridCards(props) {
   const LOCAL_MEDIA_PATH = config.mediaRootGrid;
   const USE_LOCAL_PATH = config.useLocalPathGrid || false;
   const TITLE_FONT_SIZE = config.titleFontSizeGrid || 50;
+  const TITLE_FONT_FAMILY = config.titleFontFamilyGrid || 'SUITE';
   const REG_PATTERN = /http:\/\/.*\/(\d{8}\/.*\.mp4)/;
   const toLocalPath = React.useCallback(
     (remoteSrc) => {
@@ -218,7 +220,7 @@ function GridCards(props) {
 
   return (
     <div>
-      <Container>
+      <Container fontFamily={TITLE_FONT_FAMILY}>
         {db.map((item, i) => (
           <VideoContainer
             key={item.id}
