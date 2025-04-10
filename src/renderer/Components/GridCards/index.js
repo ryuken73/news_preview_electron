@@ -59,6 +59,8 @@ const TitleContainer = styled.div`
   bottom: 0px;
   left: 0px;
   width: 100%;
+  opacity: ${props => props.show ? 1:0};
+
 `
 const Title = styled.div`
   width: 100%;
@@ -209,6 +211,10 @@ function GridCards(props) {
     setInTransition(true)
     e.stopPropagation();
     const {id} = e.target;
+    if(id !== activeIdState){
+      console.log('item is not activeState', typeof(id),id, typeof(activeIdState), activeIdState)
+      return;
+    }
     console.log('button clicked', e.target)
     const currentPlayer = itemsRef.current[id];
     currentPlayer.pause();
@@ -224,8 +230,9 @@ function GridCards(props) {
     });
     setActiveIdState(null);
     new Audio(audioScaleDown).play();
-  }, []);
-
+    },
+    [activeIdState],
+  );
 
   // const openDevTools = React.useCallback(() => {
   //   window.electron.ipcRenderer.sendMessage('openDevtools');
@@ -258,23 +265,28 @@ function GridCards(props) {
               isActive={i === parseInt(activeIdState)}
               muted
             />
-            {i === parseInt(activeIdState) && !inTransition && (
+            {/* {i === parseInt(activeIdState) && !inTransition && (
               <CustomButton
                 id={i}
                 onClick={resetActiveId}
               >
                 R
               </CustomButton>
-            )}
+            )} */}
             {/* <OpenDevTool onClick={openDevTools}>open</OpenDevTool> */}
-            {item.title !== undefined && item.title.length !== 0 && (
-              <TitleContainer>
-                <Title
-                  fontSize={TITLE_FONT_SIZE}
-                  bgColor={TITLE_BAR_COLOR}
-                >{item.title}</Title>
-              </TitleContainer>
-            )}
+            <TitleContainer
+              show={(item.title !== undefined && item.title.length !== 0)}
+              // show={false}
+            >
+              <Title
+                id={i}
+                onClick={resetActiveId}
+                fontSize={TITLE_FONT_SIZE}
+                bgColor={TITLE_BAR_COLOR}
+              >
+                {item.title !== undefined && item.title.length !== 0 ? item.title:'H'}
+              </Title>
+            </TitleContainer>
           </VideoContainer>
         ))}
         {/* <QuitButton onClick={quitApp} /> */}
