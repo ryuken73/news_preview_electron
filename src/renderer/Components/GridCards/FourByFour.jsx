@@ -13,6 +13,7 @@ gsap.registerPlugin(useGSAP)
 gsap.registerPlugin(Flip)
 
 const Container = styled.div`
+  font-family: ${props => props.fontFamily};
   width: 100vw;
   height: 100vh;
   box-sizing: border-box;
@@ -23,16 +24,18 @@ const Container = styled.div`
   align-items: stretch;
   justify-content: center;
   overflow: hidden;
-  background: black;
+  background: white;
 `
 const VideoContainer = styled.div`
   position: relative;
-  background: maroon;
+  background: black;
   cursor: pointer;
   color: white;
   width: calc(50% - 2rem);
   order: ${props => props.itemId};
   padding: 10px;
+  border-radius: 20px;
+  filter: ${props => !props.isActive && `${props.videoFilter.type}(${props.videoFilter.value}%)`};
 `
 const Item = styled.video`
   position: absolute;
@@ -53,16 +56,23 @@ const TitleContainer = styled.div`
 `
 const Title = styled.div`
   width: 100%;
-  /* background-color: rgba(0, 0, 0, 0.4); */
   background-color: ${props => props.bgColor || 'rgba(0, 0, 0, 0.4)'};
   padding: 10px;
   box-sizing: border-box;
-  /* font-size: 50px; */
   font-size: ${props => `${props.fontSize}px`||'50px'};
   padding-top: 20px;
   padding-bottom: 20px;
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+`
+const ConfigButton = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  min-height: 20px;
+  min-width: 20px;
+  background-color: transparent;
 `
 // const Box = styled.div`
 //   background: ${props => colors[props.itemId]};
@@ -136,7 +146,6 @@ export default React.memo(function FourByFour(props) {
   // const boxRefs = React.useRef([]);
   const videoContainersRef = React.useRef([]);
   const orderedBoxRef = React.useRef([]);
-  const [activeId, setActiveId] = React.useState(null);
   const [lastClickTime, setLastClickTime] = React.useState(null);
   const [lastButtonClickTime, setLastButtonClickTime] = React.useState(null);
 
@@ -171,17 +180,35 @@ export default React.memo(function FourByFour(props) {
     [LOCAL_MEDIA_PATH, REG_PATTERN],
   );
 
+  const updateConfig = React.useCallback((key, value, saveLocal=true) => {
+    setConfig(config => {
+      const newConfig = {
+        ...config,
+        [key]: value
+      }
+      if(saveLocal){
+        saveToLocalStorage(newConfig);
+      }
+      return newConfig;
+    })
+  }, [saveToLocalStorage])
+
+
+  const toggleDialogOpen = React.useCallback(() => {
+    setConfigDialogOpen(configDialogOpen => !configDialogOpen);
+  }, [])
+
   const activeOrderNumber = React.useMemo(() => {
-    if(activeId === null){
+    if(activeIdState === null){
       return null
     }
     const activeBox = videoContainersRef.current.find(box => {
-      return box.id === activeId
+      return box.id === activeIdState
     });
     return window.getComputedStyle(activeBox).order
-  }, [activeId])
+  }, [activeIdState])
 
-  console.log('activeId', activeId)
+  console.log('activeIdState', activeIdState)
   console.log('activeOrder Number', activeOrderNumber)
 
   const {contextSafe} = useGSAP({scope: topRef.current})
@@ -216,14 +243,14 @@ export default React.memo(function FourByFour(props) {
       }
       const order = [0, 1, 3, 2];
 
-      // activeId의 인덱스 찾기
+      // activeIdState의 인덱스 찾기
       const activeIndex = order.indexOf(parseInt(shouldStartFirstIndex));
 
       // input의 인덱스를 순서에 따라 계산
       let inputIndex = order.indexOf(parseInt(cssStyle.order));
 
 
-      // activeId 이후의 순서를 계산하기 위해 인덱스 조정
+      // activeIdState 이후의 순서를 계산하기 위해 인덱스 조정
       inputIndex = (inputIndex - activeIndex + order.length) % order.length;
       console.log('########## should', shouldStartFirstIndex, cssStyle.order, activeIndex, inputIndex)
       // const weights = [0, 0.1, 0.25, 0.4];
@@ -232,7 +259,7 @@ export default React.memo(function FourByFour(props) {
       // const weights = [0, 0.2, 0.4, 0.6];
       const weights = [0, 0.1, 0.2, 0.3];
       // const weights = [0, 0.4, 0, 0.4];
-      // activeId와 일치하지 않는 경우, 순서에 따라 0.1씩 증가
+      // activeIdState와 일치하지 않는 경우, 순서에 따라 0.1씩 증가
       console.log('duraion:', inputIndex*0.3)
       return weights[inputIndex] ;
       // return  0
@@ -260,7 +287,7 @@ export default React.memo(function FourByFour(props) {
       // duration: 1,
       // spin: true,
       // stagger: {
-      //   from: activeId,
+      //   from: activeIdState,
       //   amount : 1
       // },
       stagger: makeStagger(activeOrderNumber),
@@ -270,7 +297,7 @@ export default React.memo(function FourByFour(props) {
       // ease: 'elastic.out(1, 0.9)',
       onEnter: elements => gsap.fromTo(elements, {opacity: 1}, {opacity: 0.5}),
       onComplete: () => {
-        setActiveId(null)
+        setActiveIdState(null)
         setFlipState(Flip.getState(videoContainersRef.current, {props: "order"}))
         videoContainersRef.current = reorderBoxRef(videoContainersRef.current)
       }
@@ -280,16 +307,6 @@ export default React.memo(function FourByFour(props) {
     // masterTimeline.add(gsap.to(videoContainersRef.current, {scale: 0.7, duration: 0.1}), "<")
     // masterTimeline.add(gsap.to(videoContainersRef.current, {scale: 1, duration: 0.1}), "<+0.1")
     masterTimeline.play();
-
-
-    // 일반 값에 적용
-    // let obj = { num: 10, color: 'blue' }
-    // gsap.to(obj, {
-    //   num: 200,
-    //   color: 'yellow',
-      // onUpdate: () => console.log(obj)
-    // })
-
   }, {scope: topRef.current, dependencies:[lastClickTime], revertOnUpdate: true})
 
   // const onClickBox = contextSafe(() => {
@@ -370,18 +387,38 @@ export default React.memo(function FourByFour(props) {
   const scaleUp = React.useCallback((event) => {
     event.stopPropagation();
     const {id} = event.target;
+    if(id === ''){
+      return;
+    }
+    const currentPlayer = itemsRef.current[id];
+    if (id === activeIdState) {
+      if(currentPlayer.paused){
+        currentPlayer.play();
+      } else {
+        currentPlayer.pause();
+      }
+      return;
+    }
     console.log('click:', id);
     event.target.parentNode.style.zIndex = zIndexRef.current + 1;
     zIndexRef.current += 1;
     gsapScaleUp(id)
-    setActiveId(id)
-  }, [gsapScaleUp, zIndexRef])
+    setActiveIdState(id)
+    new Audio(audioScaleUp).play();
+  }, [activeIdState, gsapScaleUp])
 
   const scaleDown = React.useCallback((event) => {
     event.stopPropagation();
     const {id} = event.target;
+    if(id !== activeIdState){
+      console.log('item is not activeState', typeof(id),id, typeof(activeIdState), activeIdState)
+      return;
+    }
+    const currentPlayer = itemsRef.current[id];
+    currentPlayer.pause();
     gsapScaleDown(id)
-  }, [gsapScaleDown])
+    new Audio(audioScaleDown).play();
+  }, [activeIdState, gsapScaleDown])
 
   return (
     <Container
@@ -439,6 +476,19 @@ export default React.memo(function FourByFour(props) {
         <button id={i} onClick={scaleDown}>scaledown</button>
       </Box>
     ))} */}
+      <ConfigButton onClick={toggleDialogOpen} />
+      <ConfigDialog
+        configDialogOpen={configDialogOpen}
+        toggleDialogOpen={toggleDialogOpen}
+        config={config}
+        setConfig={setConfig}
+        updateConfig={updateConfig}
+        saveToLocalStorage={saveToLocalStorage}
+        defaultConfig={INITIAL_CONFIG}
+        currentAssetId={currentAssetId}
+        newsPreviewList={newsPreviewList}
+        setDBFromServer={setDBFromServer}
+      ></ConfigDialog>
     </Container>
   )
 })
