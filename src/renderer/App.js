@@ -4,7 +4,9 @@ import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import Slide3D from './Components/Slide3D';
 import TinderCards from './Components/TinderCards';
-import GridCards from './Components/GridCards';
+// import GridCards from './Components/GridCards';
+// import GridCards from './Components/GridCards/GsapGridCard';
+import GridCards from './Components/GridCards/FourByFour';
 
 const Container = styled.div`
   background-color: #111;
@@ -117,8 +119,8 @@ function App() {
     <div className="App">
       <Container ref={containerRef}>
         {appMode === 'grid' && (
-          <GridCards 
-            db={db} 
+          <GridCards
+            db={db}
             currentAssetId={currentAssetId}
             newsPreviewList={newsPreviewList}
             setDBFromServer={setDBFromServer}
