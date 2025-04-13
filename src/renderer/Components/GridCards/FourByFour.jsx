@@ -3,6 +3,11 @@ import styled from 'styled-components';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { Flip } from 'gsap/Flip';
+import audioScaleUp from '../../assets/audio/scaleUp.mp3';
+import audioScaleDown from '../../assets/audio/scaleDown.mp3';
+import ConfigDialog from './Config/ConfigDialog';
+import useLocalStorage from '../../hooks/useLocalStorage';
+import defaultConfig from './Config/defaultConfig';
 
 gsap.registerPlugin(useGSAP)
 gsap.registerPlugin(Flip)
@@ -18,17 +23,58 @@ const Container = styled.div`
   align-items: stretch;
   justify-content: center;
   overflow: hidden;
-  background: magenta;
+  background: black;
 `
-const Box = styled.div`
-  background: ${props => colors[props.itemId]};
+const VideoContainer = styled.div`
+  position: relative;
+  background: maroon;
   cursor: pointer;
   color: white;
-  padding: 10px;
-  font-size: 20px;
-  width: calc(48.5% - 0.5rem);
+  width: calc(50% - 2rem);
   order: ${props => props.itemId};
+  padding: 10px;
 `
+const Item = styled.video`
+  position: absolute;
+  top: 0;
+  left: 0;
+  object-fit: cover;
+  height: 100%; 
+  width: 100%;
+  border-radius: 20px;
+`;
+const TitleContainer = styled.div`
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  opacity: ${props => props.show ? 1:0};
+
+`
+const Title = styled.div`
+  width: 100%;
+  /* background-color: rgba(0, 0, 0, 0.4); */
+  background-color: ${props => props.bgColor || 'rgba(0, 0, 0, 0.4)'};
+  padding: 10px;
+  box-sizing: border-box;
+  /* font-size: 50px; */
+  font-size: ${props => `${props.fontSize}px`||'50px'};
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+`
+// const Box = styled.div`
+//   background: ${props => colors[props.itemId]};
+//   cursor: pointer;
+//   color: white;
+//   padding: 10px;
+//   font-size: 20px;
+//   width: calc(48.5% - 0.5rem);
+//   order: ${props => props.itemId};
+// `
+
+const INITIAL_CONFIG = defaultConfig;
 
 const data = ['1층', '2층', '3층', '4층']
 const colors = ['cyan', 'grey', 'blue', 'maroon']
@@ -81,22 +127,55 @@ const getMoveDirection = (topActive, leftActive, top, left) => {
   return null
 }
 
-export default React.memo(function FourByFour() {
+export default React.memo(function FourByFour(props) {
+  const { db, setDBFromServer, newsPreviewList, currentAssetId } = props;
+  const [storedValue, saveToLocalStorage] = useLocalStorage('slide3D', INITIAL_CONFIG);
+  const [zIndexes, setZindexes] = React.useState(new Array(db.length || 4));
+  const [activeIdState, setActiveIdState] = React.useState(null);
   const topRef = React.useRef(null);
-  const boxRefs = React.useRef([]);
+  // const boxRefs = React.useRef([]);
+  const videoContainersRef = React.useRef([]);
   const orderedBoxRef = React.useRef([]);
   const [activeId, setActiveId] = React.useState(null);
   const [lastClickTime, setLastClickTime] = React.useState(null);
   const [lastButtonClickTime, setLastButtonClickTime] = React.useState(null);
 
+  const [config, setConfig] = React.useState(INITIAL_CONFIG);
+  const [configDialogOpen, setConfigDialogOpen] = React.useState(false);
+
   const [flipState, setFlipState] = React.useState(null);
   const zIndexRef = React.useRef(3);
+  const itemsRef = React.useRef([]);
+
+  const LOCAL_MEDIA_PATH = config.mediaRootGrid;
+  const USE_LOCAL_PATH = config.useLocalPathGrid || false;
+  const TITLE_FONT_SIZE = config.titleFontSizeGrid || 50;
+  const TITLE_FONT_FAMILY = config.titleFontFamilyGrid || 'SUITE';
+  const TITLE_BAR_COLOR = config.titleBarColorGrid || 'rgba(0, 0, 0, 0.4)';
+  const VIDEO_FILTER_TYPE = config.videoFilterTypeGrid || 'saturate';
+  const VIDEO_FILTER_VALUE = config.videoFilterValueGrid == undefined ? 20 : config.videoFilterValueGrid;
+  const VIDEO_TRANSITION_DELAY = config.videoTransitionDelayGrid === undefined ? 0.2 : config.videoTransitionDelayGrid;
+  const REG_PATTERN = /http:\/\/.*\/(\d{8}\/.*\.mp4)/;
+
+  const toLocalPath = React.useCallback(
+    (remoteSrc) => {
+      const match = remoteSrc.match(REG_PATTERN);
+      if (match === null) {
+        return remoteSrc;
+      }
+      const group = match[1];
+      const localSrc = `${LOCAL_MEDIA_PATH}/${group}`;
+      console.log(localSrc);
+      return localSrc;
+    },
+    [LOCAL_MEDIA_PATH, REG_PATTERN],
+  );
 
   const activeOrderNumber = React.useMemo(() => {
     if(activeId === null){
       return null
     }
-    const activeBox = boxRefs.current.find(box => {
+    const activeBox = videoContainersRef.current.find(box => {
       return box.id === activeId
     });
     return window.getComputedStyle(activeBox).order
@@ -109,8 +188,8 @@ export default React.memo(function FourByFour() {
 
   // React.useEffect(() => {
   //   let ctx = gsap.context(() => {
-  //     // gsap.to(boxRefs.current[0], {rotation: 360})
-  //     // gsap.to(boxRefs.current[0], {x: 200})
+  //     // gsap.to(videoContainersRef.current[0], {rotation: 360})
+  //     // gsap.to(videoContainersRef.current[0], {x: 200})
   //   })
   // }, [])
   const getNextIndex = (id) => {
@@ -165,13 +244,13 @@ export default React.memo(function FourByFour() {
       return
     }
     // Flip.from으로 해보자.
-    boxRefs.current.forEach(box => {
+    videoContainersRef.current.forEach(box => {
       console.log('before', box.id, window.getComputedStyle(box).order)
       console.log(flipState)
     })
-    const state = flipState === null ? Flip.getState(boxRefs.current, {props: "order"}) : flipState;
+    const state = flipState === null ? Flip.getState(videoContainersRef.current, {props: "order"}) : flipState;
     console.log(state)
-    boxRefs.current.forEach((box, i) => {
+    videoContainersRef.current.forEach((box, i) => {
       const nextOrder = getNextOrder(box)
       box.style.order = nextOrder
     })
@@ -192,14 +271,14 @@ export default React.memo(function FourByFour() {
       onEnter: elements => gsap.fromTo(elements, {opacity: 1}, {opacity: 0.5}),
       onComplete: () => {
         setActiveId(null)
-        setFlipState(Flip.getState(boxRefs.current, {props: "order"}))
-        boxRefs.current = reorderBoxRef(boxRefs.current)
+        setFlipState(Flip.getState(videoContainersRef.current, {props: "order"}))
+        videoContainersRef.current = reorderBoxRef(videoContainersRef.current)
       }
     })
     masterTimeline.pause();
     masterTimeline.add(flipTimeline)
-    // masterTimeline.add(gsap.to(boxRefs.current, {scale: 0.7, duration: 0.1}), "<")
-    // masterTimeline.add(gsap.to(boxRefs.current, {scale: 1, duration: 0.1}), "<+0.1")
+    // masterTimeline.add(gsap.to(videoContainersRef.current, {scale: 0.7, duration: 0.1}), "<")
+    // masterTimeline.add(gsap.to(videoContainersRef.current, {scale: 1, duration: 0.1}), "<+0.1")
     masterTimeline.play();
 
 
@@ -225,7 +304,7 @@ export default React.memo(function FourByFour() {
   // const ease = 'expo.out'
   // const ease = 'steps'
   const gsapScaleUp = contextSafe((id) => {
-    const target = boxRefs.current[id];
+    const target = videoContainersRef.current[id];
     const targetRect = target.getBoundingClientRect();
     const {top: topActive, left: leftActive} = targetRect;
     const style = getComputedStyle(target)
@@ -238,7 +317,7 @@ export default React.memo(function FourByFour() {
       duration: 0.5,
       ease
     })
-    const otherBoxes = boxRefs.current.filter(box => box.id !== id)
+    const otherBoxes = videoContainersRef.current.filter(box => box.id !== id)
     otherBoxes.forEach(box => {
       const boxRect = box.getBoundingClientRect();
       const {top, left} = boxRect
@@ -253,7 +332,7 @@ export default React.memo(function FourByFour() {
         x: `${moveOutFactor[0]*100}%`,
         y:`${moveOutFactor[1]*100}%`,
         scaleY,
-        opacity: 0,
+        opacity: 1,
         duration: 0.5,
         ease
       })
@@ -261,9 +340,9 @@ export default React.memo(function FourByFour() {
   })
 
   const gsapScaleDown = contextSafe((id) => {
-    const target = boxRefs.current[id]
+    const target = videoContainersRef.current[id]
     console.log(target)
-    gsap.to(boxRefs.current, {
+    gsap.to(videoContainersRef.current, {
       scale: 1,
       x: '0',
       y:'0',
@@ -275,7 +354,7 @@ export default React.memo(function FourByFour() {
         }
       }
     })
-    const otherBoxes = boxRefs.current.filter(box => box.id !== id)
+    const otherBoxes = videoContainersRef.current.filter(box => box.id !== id)
     otherBoxes.forEach(box => {
       gsap.to(box, {
         x: `0%`,
@@ -308,19 +387,58 @@ export default React.memo(function FourByFour() {
     <Container
       ref={topRef}
     >
-      {data.map((stage, i) => (
-        <Box
-          // onClick={onClickBox}
-          key={i}
+      {db.map((item, i) => (
+        <VideoContainer
+          key={item.id}
           id={i}
           itemId={i}
-          ref={el => boxRefs.current[i] = el}
-          zIndex={INITIAL_Z_INDEX[i]}
-        >{stage}{boxRefs.current[i]?.style.order}
-          <button id={i} onClick={scaleUp}>scaleup</button>
-          <button id={i} onClick={scaleDown}>scaledown</button>
-        </Box>
+          ref={(el) => (videoContainersRef.current[i] = el)}
+          isActive={i === parseInt(activeIdState)}
+          // onTransitionEnd={onTransitionEnd}
+          // onClick={onClickItem}
+          onClick={scaleUp}
+          zIndex={zIndexes[i]}
+          videoFilter={{ type: VIDEO_FILTER_TYPE, value: VIDEO_FILTER_VALUE }}
+          transitionDelay={VIDEO_TRANSITION_DELAY}
+        >
+          <Item
+            crossOrigin="anonymous"
+            id={i}
+            src={USE_LOCAL_PATH ? toLocalPath(item.src) : item.src}
+            ref={(el) => (itemsRef.current[i] = el)}
+            itemIndex={i}
+            itemLength={db.length}
+            radius={config.radius}
+            isActive={i === parseInt(activeIdState)}
+            muted
+          />
+          <TitleContainer
+            show={(item.title !== undefined && item.title.length !== 0)}
+          >
+            <Title
+              id={i}
+              onClick={scaleDown}
+              fontSize={TITLE_FONT_SIZE}
+              bgColor={TITLE_BAR_COLOR}
+            >
+              {item.title !== undefined && item.title.length !== 0 ? item.title:'H'}
+            </Title>
+          </TitleContainer>
+        </VideoContainer>
       ))}
+    {/* {data.map((stage, i) => (
+      <Box
+        // onClick={onClickBox}
+        key={i}
+        id={i}
+        itemId={i}
+        ref={el => boxRefs.current[i] = el}
+        zIndex={INITIAL_Z_INDEX[i]}
+      >{stage}{boxRefs.current[i]?.style.order}
+        <button id={i} onClick={scaleUp}>scaleup</button>
+        <button id={i} onClick={scaleDown}>scaledown</button>
+      </Box>
+    ))} */}
     </Container>
   )
 })
