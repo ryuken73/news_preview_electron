@@ -25,6 +25,8 @@ const Container = styled.div`
   justify-content: center;
   overflow: hidden;
   background: white;
+  /* padding-top: 0.5rem;
+  padding-bottom: 0.5rem; */
 `
 const VideoContainer = styled.div`
   position: relative;
