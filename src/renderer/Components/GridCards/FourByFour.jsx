@@ -15,7 +15,7 @@ gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(Flip);
 
 const Container = styled.div`
-  font-family: ${props => props.fontFamily};
+  font-family: ${(props) => props.fontFamily};
   width: 100vw;
   height: 100vh;
   box-sizing: border-box;
@@ -76,17 +76,16 @@ const ConfigButton = styled.div`
   min-height: 20px;
   min-width: 20px;
   background-color: transparent;
-`
+`;
 
 const INITIAL_CONFIG = defaultConfig;
-
 const AUTO_ROTATE = true;
 const NEXT_INDEX_MAP = {
   0: 1,
   1: 3,
   3: 2,
   2: 0
-}
+};
 
 const SCALE_UP_FACTOR = [
   [1, 1],
@@ -105,27 +104,13 @@ const MOVE_OUT_FACTOR = {
 }
 
 const getMoveDirection = (topActive, leftActive, top, left) => {
-  if(topActive === top && leftActive < left){
-    if(topActive === 0){
-      return 'rightDown'
-    } else {
-      return 'rightUp'
-    }
+  if (topActive === top && leftActive < left) {
+    return topActive === 0 ? 'rightDown':'rightUp';
   }
-  if(topActive === top && leftActive > left){
-    if(topActive === 0){
-      return 'leftDown'
-    } else {
-      return 'leftUp'
-    }
+  if (topActive === top && leftActive > left) {
+    return topActive === 0 ? 'leftDown':'leftUp';
   }
-  if(topActive < top ){
-    return 'down'
-  }
-  if(topActive > top ){
-    return 'up'
-  }
-  return null
+  return topActive < top ? 'down':'up';
 }
 
 export default React.memo(function FourByFour(props) {
@@ -304,9 +289,6 @@ export default React.memo(function FourByFour(props) {
     masterTimeline.play();
   }, {scope: topRef.current, dependencies:[lastClickTime], revertOnUpdate: true})
 
-  // const onClickBox = contextSafe(() => {
-  // }, [])
-
 
   const ease = 'power2.out'
   // const ease = 'bounce.out'
@@ -341,7 +323,7 @@ export default React.memo(function FourByFour(props) {
       }
       const moveOutFactor = MOVE_OUT_FACTOR[moveDirection];
       const scaleY = moveDirection !== 'up' && moveDirection !== 'down' ? 2 : 1;
-      console.log(box, topActive, leftActive, top, left, moveDirection, moveOutFactor, scaleY)
+      console.log('moveDirection:', box, topActive, leftActive, top, left, moveDirection, moveOutFactor, scaleY)
       gsap.to(box, {
         x: `${moveOutFactor[0] * 100}%`,
         y: `${moveOutFactor[1] * 100}%`,
@@ -386,16 +368,13 @@ export default React.memo(function FourByFour(props) {
   const scaleUp = React.useCallback((event) => {
     event.stopPropagation();
     const { id } = event.target;
-    if(id === ''){
+    if (id === '') {
       return;
     }
     const currentPlayer = itemsRef.current[id];
     if (id === activeIdState) {
-      if (currentPlayer.paused) {
-        currentPlayer.play();
-      } else {
-        currentPlayer.pause();
-      }
+      // eslint-disable-next-line no-unused-expressions
+      currentPlayer.paused ? currentPlayer.play() : currentPlayer.pause();
       return;
     }
     console.log('click:', id);
@@ -472,7 +451,7 @@ export default React.memo(function FourByFour(props) {
         currentAssetId={currentAssetId}
         newsPreviewList={newsPreviewList}
         setDBFromServer={setDBFromServer}
-      ></ConfigDialog>
+       />
     </Container>
   )
 })
