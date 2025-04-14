@@ -24,9 +24,9 @@ const Container = styled.div`
   align-items: stretch;
   justify-content: center;
   overflow: hidden;
-  background: white;
-  /* padding-top: 0.5rem;
-  padding-bottom: 0.5rem; */
+  background: black;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 `
 const VideoContainer = styled.div`
   position: relative;
@@ -330,7 +330,7 @@ export default React.memo(function FourByFour(props) {
     console.log(`id=${target.id}, order=${style.order}`)
     const translateFactor = SCALE_UP_FACTOR[style.order]
     gsap.to(target, {
-      scale: 2,
+      scale: 2.1,
       x: `${translateFactor[0]*50}%`,
       y:`${translateFactor[1]*50}%`,
       duration: 0.5,
