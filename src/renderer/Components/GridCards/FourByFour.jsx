@@ -160,12 +160,14 @@ export default React.memo(function FourByFour(props) {
     ]
   }, [dbOriginal])
 
-  const [config, setConfig] = React.useState(INITIAL_CONFIG);
+  const [config, setConfig] = React.useState(storedValue);
   const [configDialogOpen, setConfigDialogOpen] = React.useState(false);
 
   const [flipState, setFlipState] = React.useState(null);
   const zIndexRef = React.useRef(3);
   const itemsRef = React.useRef([]);
+
+  console.log('stored config', config);
 
   const LOCAL_MEDIA_PATH = config.mediaRootGrid;
   const USE_LOCAL_PATH = config.useLocalPathGrid || false;
@@ -434,6 +436,7 @@ export default React.memo(function FourByFour(props) {
   return (
     <Container
       ref={topRef}
+      fontFamily={TITLE_FONT_FAMILY}
     >
       {db.map((item, i) => (
         <VideoContainer
