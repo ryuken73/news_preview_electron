@@ -25,8 +25,8 @@ const Container = styled.div`
   justify-content: center;
   overflow: hidden;
   background: black;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  /* padding-top: 0.5rem; */
+  /* padding-bottom: 0.5rem; */
 `
 const VideoContainer = styled.div`
   position: relative;
@@ -140,9 +140,9 @@ const getMoveDirection = (topActive, leftActive, top, left) => {
 }
 
 export default React.memo(function FourByFour(props) {
-  const { db, setDBFromServer, newsPreviewList, currentAssetId } = props;
+  const { db: dbOriginal, setDBFromServer, newsPreviewList, currentAssetId } = props;
   const [storedValue, saveToLocalStorage] = useLocalStorage('slide3D', INITIAL_CONFIG);
-  const [zIndexes, setZindexes] = React.useState(new Array(db.length || 4));
+  const [zIndexes, setZindexes] = React.useState(new Array(dbOriginal.length || 4));
   const [activeIdState, setActiveIdState] = React.useState(null);
   const topRef = React.useRef(null);
   // const boxRefs = React.useRef([]);
@@ -150,6 +150,15 @@ export default React.memo(function FourByFour(props) {
   const orderedBoxRef = React.useRef([]);
   const [lastClickTime, setLastClickTime] = React.useState(null);
   const [lastButtonClickTime, setLastButtonClickTime] = React.useState(null);
+
+  const db = React.useMemo(() => {
+    return [
+      dbOriginal[1],
+      dbOriginal[0],
+      dbOriginal[2],
+      dbOriginal[3]
+    ]
+  }, [dbOriginal])
 
   const [config, setConfig] = React.useState(INITIAL_CONFIG);
   const [configDialogOpen, setConfigDialogOpen] = React.useState(false);
@@ -285,7 +294,7 @@ export default React.memo(function FourByFour(props) {
     })
     const masterTimeline = gsap.timeline();
     const flipTimeline = Flip.from(state, {
-      duration: 0.5,
+      duration: 0.2,
       // duration: 1,
       // spin: true,
       // stagger: {
