@@ -1,4 +1,6 @@
-import React, { act } from 'react';
+/* eslint-disable react/prop-types */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React from 'react';
 import styled from 'styled-components';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -44,7 +46,7 @@ const Item = styled.video`
   top: 0;
   left: 0;
   object-fit: cover;
-  height: 100%; 
+  height: 100%;
   width: 100%;
   border-radius: 20px;
 `;
@@ -140,24 +142,22 @@ const getMoveDirection = (topActive, leftActive, top, left) => {
 }
 
 export default React.memo(function FourByFour(props) {
-  const { db: dbOriginal, setDBFromServer, newsPreviewList, currentAssetId } = props;
+  const {
+    db: dbOriginal,
+    setDBFromServer,
+    newsPreviewList,
+    currentAssetId,
+  } = props;
   const [storedValue, saveToLocalStorage] = useLocalStorage('slide3D', INITIAL_CONFIG);
   const [zIndexes, setZindexes] = React.useState(new Array(dbOriginal.length || 4));
   const [activeIdState, setActiveIdState] = React.useState(null);
   const topRef = React.useRef(null);
   // const boxRefs = React.useRef([]);
   const videoContainersRef = React.useRef([]);
-  const orderedBoxRef = React.useRef([]);
   const [lastClickTime, setLastClickTime] = React.useState(null);
-  const [lastButtonClickTime, setLastButtonClickTime] = React.useState(null);
 
   const db = React.useMemo(() => {
-    return [
-      dbOriginal[1],
-      dbOriginal[0],
-      dbOriginal[2],
-      dbOriginal[3]
-    ]
+    return [dbOriginal[1], dbOriginal[0], dbOriginal[2], dbOriginal[3]];
   }, [dbOriginal])
 
   const [config, setConfig] = React.useState(storedValue);
@@ -176,7 +176,10 @@ export default React.memo(function FourByFour(props) {
   const TITLE_BAR_COLOR = config.titleBarColorGrid || 'rgba(0, 0, 0, 0.4)';
   const VIDEO_FILTER_TYPE = config.videoFilterTypeGrid || 'saturate';
   const VIDEO_FILTER_VALUE = config.videoFilterValueGrid == undefined ? 20 : config.videoFilterValueGrid;
-  const VIDEO_TRANSITION_DELAY = config.videoTransitionDelayGrid === undefined ? 0.2 : config.videoTransitionDelayGrid;
+  const VIDEO_TRANSITION_DELAY =
+    config.videoTransitionDelayGrid === undefined
+      ? 0.2
+      : config.videoTransitionDelayGrid;
   const REG_PATTERN = /http:\/\/.*\/(\d{8}\/.*\.mp4)/;
 
   const toLocalPath = React.useCallback(
@@ -187,7 +190,6 @@ export default React.memo(function FourByFour(props) {
       }
       const group = match[1];
       const localSrc = `${LOCAL_MEDIA_PATH}/${group}`;
-      console.log(localSrc);
       return localSrc;
     },
     [LOCAL_MEDIA_PATH, REG_PATTERN],
@@ -224,17 +226,8 @@ export default React.memo(function FourByFour(props) {
   console.log('activeIdState', activeIdState)
   console.log('activeOrder Number', activeOrderNumber)
 
-  const {contextSafe} = useGSAP({scope: topRef.current})
+  const { contextSafe } = useGSAP({ scope: topRef.current });
 
-  // React.useEffect(() => {
-  //   let ctx = gsap.context(() => {
-  //     // gsap.to(videoContainersRef.current[0], {rotation: 360})
-  //     // gsap.to(videoContainersRef.current[0], {x: 200})
-  //   })
-  // }, [])
-  const getNextIndex = (id) => {
-    return NEXT_INDEX_MAP[id]
-  }
   const getNextOrder = (boxElement) => {
     const style = window.getComputedStyle(boxElement)
     return NEXT_INDEX_MAP[parseInt(style.order)];
