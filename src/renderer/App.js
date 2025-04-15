@@ -2,11 +2,15 @@ import './App.css';
 import React from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
+import useAppState from './hooks/useAppState';
 import Slide3D from './Components/Slide3D';
 import TinderCards from './Components/TinderCards';
 // import GridCards from './Components/GridCards';
 // import GridCards from './Components/GridCards/GsapGridCard';
 import GridCards from './Components/GridCards/FourByFour';
+import ToolContainer from './Components/Draw/ToolContainer';
+import ToolContainerSimple from './Components/Draw/ToolContainerSimple';
+import DrawSvg from './Components/Draw/DrawSvg';
 
 const Container = styled.div`
   background-color: #111;
@@ -81,6 +85,7 @@ function App() {
   const [db, setDB] = React.useState(DEFAULT_DB);
   const [currentAssetId, setCurrentAssetId] = React.useState(null);
   const [newsPreviewList, setNewsPreviewList] = React.useState([]);
+  const {drawShow, toggleDraw} = useAppState();
   console.log(assetId);
   console.log('####', currentAssetId, newsPreviewList)
 
@@ -115,6 +120,15 @@ function App() {
     }
   }, [setDBFromServer]);
 
+  const ToolContainerComponent = {
+    classic: ToolContainer,
+    simple: ToolContainerSimple,
+    oneColumn: ToolContainerSimple,
+    twoColumn: ToolContainerSimple,
+  };
+
+  const SelectedToolContainer = ToolContainerComponent['twoColumn'];
+
   return (
     <div className="App">
       <Container ref={containerRef}>
@@ -136,6 +150,8 @@ function App() {
             setDBFromServer={setDBFromServer}
           />
         )}
+        {drawShow && <DrawSvg />}
+        <SelectedToolContainer drawShow={drawShow} toggleDraw={toggleDraw} />
       </Container>
     </div>
   );

@@ -1,13 +1,17 @@
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import App from './App';
+import { store } from './store';
 
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);
 root.render(
-  <Router>
-    <App />
-  </Router>
+  <Provider store={store}>
+    <Router>
+      <App />
+    </Router>
+  </Provider>
 );
 
 // calling IPC exposed from preload script
