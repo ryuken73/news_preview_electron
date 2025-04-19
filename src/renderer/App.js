@@ -5,8 +5,6 @@ import { useSearchParams } from 'react-router-dom';
 import useAppState from './hooks/useAppState';
 import Slide3D from './Components/Slide3D';
 import TinderCards from './Components/TinderCards';
-// import GridCards from './Components/GridCards';
-// import GridCards from './Components/GridCards/GsapGridCard';
 import GridCards from './Components/GridCards/FourByFour';
 import ToolContainer from './Components/Draw/ToolContainer';
 import ToolContainerSimple from './Components/Draw/ToolContainerSimple';
