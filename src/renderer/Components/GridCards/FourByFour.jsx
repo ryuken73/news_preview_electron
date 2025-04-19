@@ -31,7 +31,6 @@ const Container = styled.div`
 const VideoContainer = styled.div`
   position: relative;
   background: black;
-  cursor: pointer;
   color: white;
   width: calc(50% - 2rem);
   order: ${props => props.itemId};
