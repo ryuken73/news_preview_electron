@@ -15,7 +15,7 @@ gsap.registerPlugin(Flip);
 
 const VideoContainer = styled.div`
   position: relative;
-  height: 10vh;
+  height: 15vh;
   width: 50vw;
   order: ${(props) => props.id};
 `;
@@ -28,13 +28,18 @@ const TitleContainer = styled.div`
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 10vh;
+  height: 15vh;
   width: 100%;
 `;
 const Title = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
+  width: 100%;
+  font-size: ${(props) => `${props.fontSize*2}px` || '50px'};
+  line-height: 15vh;
+  vertical-align: middle;
+  height: 15vh;
   transform: translate(-50%, -50%);
   background: rgba(0, 0, 0, 0.5);
 `;
@@ -190,7 +195,7 @@ export default React.memo(function Video(props) {
   const gsapScaleDown = contextSafe(() => {
     const tl = gsap.timeline();
     tl.to(videoContainerRef.current, {
-      height: '10vh',
+      height: '15vh',
       duration: 0.3,
     });
     tl.to(videoContainerRef.current, {
@@ -203,7 +208,7 @@ export default React.memo(function Video(props) {
     });
   });
 
-  const onClickVideo = React.useCallback(() => {
+  const onClickTitle = React.useCallback(() => {
     if (isExpandPhase) {
       const tl = gsapMoveDown();
       gsapScaleUp(tl);
@@ -213,7 +218,7 @@ export default React.memo(function Video(props) {
     }
   }, [isExpandPhase, isShrinkPhase]);
 
-  const onClickTitle = React.useCallback(() => {});
+  const onClickVideo = React.useCallback(() => {});
 
   return (
     <VideoContainer
