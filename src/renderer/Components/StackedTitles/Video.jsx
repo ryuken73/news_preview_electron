@@ -36,7 +36,7 @@ const Title = styled.div`
   top: 50%;
   left: 50%;
   width: 100%;
-  font-size: ${(props) => `${props.fontSize*2}px` || '50px'};
+  font-size: ${(props) => `${props.fontSize * 2}px` || '50px'};
   line-height: 15vh;
   vertical-align: middle;
   height: 15vh;
@@ -56,7 +56,7 @@ export default React.memo(function Video(props) {
     parentRef,
     lastOrderRef,
     animationPhase,
-    setAnimationPhase
+    setAnimationPhase,
   } = props;
   const [zIndex, setZindex] = React.useState(0);
 
@@ -99,7 +99,7 @@ export default React.memo(function Video(props) {
   useGSAP(
     () => {
       console.log('isActive Changed:', id, activeIdState, isActive);
-      if (animationPhase === null){
+      if (animationPhase === null) {
         return;
       }
       if (isActive) {
@@ -128,7 +128,7 @@ export default React.memo(function Video(props) {
             onComplete: () => {
               setAnimationPhase(null);
               setActiveIdState(null);
-            }
+            },
           },
         );
         return;
@@ -202,23 +202,34 @@ export default React.memo(function Video(props) {
       width: '50vw',
       duration: 0.2,
       onComplete: () => {
+        itemRef.current.pause();
         setAnimationPhase('shrink');
         gsapMoveUp();
       },
     });
   });
 
-  const onClickTitle = React.useCallback(() => {
-    if (isExpandPhase) {
-      const tl = gsapMoveDown();
-      gsapScaleUp(tl);
-      setAnimationPhase('expand');
-    } else if (isShrinkPhase) {
-      gsapScaleDown();
-    }
-  }, [isExpandPhase, isShrinkPhase]);
+  const onClickTitle = React.useCallback(
+    (e) => {
+      e.stopPropagation();
+      if (isExpandPhase) {
+        const tl = gsapMoveDown();
+        gsapScaleUp(tl);
+        setAnimationPhase('expand');
+      } else if (isShrinkPhase) {
+        gsapScaleDown();
+      }
+    },
+    [isExpandPhase, isShrinkPhase],
+  );
 
-  const onClickVideo = React.useCallback(() => {});
+  const onClickVideo = React.useCallback(() => {
+    if (itemRef.current.paused) {
+      itemRef.current.play();
+    } else {
+      itemRef.current.pause();
+    }
+  }, []);
 
   return (
     <VideoContainer
