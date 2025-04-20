@@ -1,0 +1,114 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React from 'react';
+import styled from 'styled-components';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { Flip } from 'gsap/Flip';
+import ConfigDialog from '../GridCards/Config/ConfigDialog';
+import useLocalStorage from '../../hooks/useLocalStorage';
+import defaultConfig from '../GridCards/Config/defaultConfig';
+import Video from './Video';
+
+gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(Flip);
+
+const Container = styled.div`
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  /* display: flex;
+  flex-wrap: wrap; */
+`;
+const CenterContainer = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+const ConfigButton = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  min-height: 20px;
+  min-width: 20px;
+  background-color: transparent;
+`;
+
+const INITIAL_CONFIG = defaultConfig;
+
+export default React.memo(function TextToVideo(props) {
+  const { db, setDBFromServer, newsPreviewList, currentAssetId } = props;
+  const [storedValue, saveToLocalStorage] = useLocalStorage(
+    'slide3D',
+    INITIAL_CONFIG,
+  );
+  const [activeIdState, setActiveIdState] = React.useState(null);
+  const [animationPhase, setAnimationPhase] = React.useState(null);
+  const topRef = React.useRef(null);
+  const videoParentContainer = React.useRef(null);
+  const lastOrderRef = React.useRef(4);
+
+  const [config, setConfig] = React.useState(storedValue);
+  const [configDialogOpen, setConfigDialogOpen] = React.useState(false);
+
+  const itemsRef = React.useRef([]);
+
+  const TITLE_FONT_FAMILY = config.titleFontFamilyGrid || 'SUITE';
+
+  const updateConfig = React.useCallback(
+    (key, value, saveLocal = true) => {
+      setConfig((config) => {
+        const newConfig = {
+          ...config,
+          [key]: value,
+        };
+        if (saveLocal) {
+          saveToLocalStorage(newConfig);
+        }
+        return newConfig;
+      });
+    },
+    [saveToLocalStorage],
+  );
+
+  const toggleDialogOpen = React.useCallback(() => {
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    setConfigDialogOpen((configDialogOpen) => !configDialogOpen);
+  }, []);
+
+  return (
+    <Container ref={topRef} fontFamily={TITLE_FONT_FAMILY}>
+      <CenterContainer ref={videoParentContainer}>
+        {db.map((item, i) => (
+          <Video
+            id={i}
+            item={item}
+            activeIdState={activeIdState}
+            setActiveIdState={setActiveIdState}
+            config={config}
+            itemsRef={itemsRef}
+            parentRef={videoParentContainer}
+            lastOrderRef={lastOrderRef}
+            animationPhase={animationPhase}
+            setAnimationPhase={setAnimationPhase}
+           />
+        ))}
+        <ConfigButton onClick={toggleDialogOpen} />
+        <ConfigDialog
+          configDialogOpen={configDialogOpen}
+          toggleDialogOpen={toggleDialogOpen}
+          config={config}
+          setConfig={setConfig}
+          updateConfig={updateConfig}
+          saveToLocalStorage={saveToLocalStorage}
+          defaultConfig={INITIAL_CONFIG}
+          currentAssetId={currentAssetId}
+          newsPreviewList={newsPreviewList}
+          setDBFromServer={setDBFromServer}
+        />
+      </CenterContainer>
+    </Container>
+  );
+});

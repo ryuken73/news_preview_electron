@@ -6,6 +6,7 @@ import useAppState from './hooks/useAppState';
 import Slide3D from './Components/Slide3D';
 import TinderCards from './Components/TinderCards';
 import GridCards from './Components/GridCards/FourByFour';
+import StackedTitles from './Components/StackedTitles/TextToVideo';
 import ToolContainer from './Components/Draw/ToolContainer';
 import ToolContainerSimple from './Components/Draw/ToolContainerSimple';
 import DrawSvg from './Components/Draw/DrawSvg';
@@ -30,7 +31,7 @@ const DEFAULT_DB = [
   { id: 7, title: '당일도 햄버거집 회동', src: 'd:/temp/4.mp4' },
   { id: 6, title: '대왕고래 첫 시추', src: 'd:/temp/5.mp4' },
   { id: 9, title: '얼굴없는 천사', src: 'd:/temp/2.mp4' },
-  { id: 8, title: '', src: 'd:/temp/3.mp4' },
+  { id: 8, title: '운 명', src: 'd:/temp/3.mp4' },
   // { id: 4, title: 'AA', src: 'd:/temp/6.mp4' },
   // { id: 5, title: 'BB', src: 'd:/temp/7.mp4' },
 ];
@@ -76,7 +77,8 @@ const getAssetFromServer = async (options) => {
 };
 
 function App() {
-  const [appMode, setMode] = React.useState('grid');
+  // const [appMode, setMode] = React.useState('grid');
+  const [appMode, setMode] = React.useState('stacked');
   const containerRef = React.useRef();
   const [searchParams] = useSearchParams();
   const assetId = searchParams.get('assetId') || null;
@@ -105,10 +107,10 @@ function App() {
     // });
     // setDB(sources);
     // setCurrentAssetId(assetId);
-    window.electron.ipcRenderer.getMode((appMode) => {
-      console.log(appMode);
-      setMode(appMode)
-    });
+    // window.electron.ipcRenderer.getMode((appMode) => {
+    //   console.log(appMode);
+    //   setMode(appMode)
+    // });
     await setDBFromServer('latestNewsPreview');
     const assetList = await getAssetFromServer({
       cmd: 'newsPreviewList'
@@ -132,6 +134,14 @@ function App() {
       <Container ref={containerRef}>
         {appMode === 'grid' && (
           <GridCards
+            db={db}
+            currentAssetId={currentAssetId}
+            newsPreviewList={newsPreviewList}
+            setDBFromServer={setDBFromServer}
+          />
+        )}
+        {appMode === 'stacked' && (
+          <StackedTitles
             db={db}
             currentAssetId={currentAssetId}
             newsPreviewList={newsPreviewList}
