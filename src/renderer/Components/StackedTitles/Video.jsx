@@ -18,11 +18,14 @@ const VideoContainer = styled.div`
   height: 15vh;
   width: 50vw;
   order: ${(props) => props.id};
+  margin: 10px;
+  border-radius: 20px;
 `;
 const Item = styled.video`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 20px;
 `;
 const TitleContainer = styled.div`
   position: absolute;
@@ -30,17 +33,17 @@ const TitleContainer = styled.div`
   left: 0;
   height: 15vh;
   width: 100%;
+  border-radius: 20px;
 `;
 const Title = styled.div`
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 0%;
+  left: 0%;
   width: 100%;
-  font-size: ${(props) => `${props.fontSize * 2}px` || '50px'};
+  height: 15vh;
+  font-size: ${(props) => `${props.fontSize}px` || '50px'};
   line-height: 15vh;
   vertical-align: middle;
-  height: 15vh;
-  transform: translate(-50%, -50%);
   background: rgba(0, 0, 0, 0.5);
 `;
 
@@ -63,6 +66,7 @@ export default React.memo(function Video(props) {
   const topRef = React.useRef(null);
   const videoContainerRef = React.useRef(null);
   const itemRef = React.useRef(null);
+  const titleRef = React.useRef(null);
 
   const LOCAL_MEDIA_PATH = config.mediaRootGrid;
   const USE_LOCAL_PATH = config.useLocalPathGrid || false;
@@ -160,6 +164,7 @@ export default React.memo(function Video(props) {
     parentRef.current.style.height = '100vh';
     lastOrderRef.current += 1;
     videoContainerRef.current.style.order = lastOrderRef.current;
+    videoContainerRef.current.style.margin = 0;
     const tl = Flip.from(state, {
       duration: 0.5,
       nested: true,
@@ -173,6 +178,7 @@ export default React.memo(function Video(props) {
     parentRef.current.style.justifyContent = 'null';
     parentRef.current.style.height = 'auto';
     videoContainerRef.current.style.order = id;
+    videoContainerRef.current.style.margin = '10px';
     const tl = Flip.from(state, {
       duration: 0.5,
       nested: true,
@@ -180,27 +186,69 @@ export default React.memo(function Video(props) {
     return tl;
   });
 
+  const WIDTH_DURATION = 0.2;
+  const HEIGHT_DURATION = 0.3;
+
   const gsapScaleUp = contextSafe((tl) => {
     setActiveIdState(id);
+    // tl.to([videoContainerRef.current, titleRef.current], {
     tl.to(videoContainerRef.current, {
       width: '100vw',
-      duration: 0.2,
+      duration: WIDTH_DURATION,
     });
     tl.to(videoContainerRef.current, {
       height: '100vh',
-      duration: 0.3,
+      duration: HEIGHT_DURATION,
+      borderRadius: 0
     });
+    tl.to(
+      titleRef.current,
+      {
+        duration: HEIGHT_DURATION,
+        fontSize: TITLE_FONT_SIZE * 1.5,
+        borderRadius: 0
+      },
+      '<',
+    );
+    tl.to(
+      itemRef.current,
+      {
+        // height: '100vh',
+        duration: HEIGHT_DURATION,
+        borderRadius: 0
+      },
+      '<',
+    );
   });
 
   const gsapScaleDown = contextSafe(() => {
     const tl = gsap.timeline();
     tl.to(videoContainerRef.current, {
       height: '15vh',
-      duration: 0.3,
+      duration: HEIGHT_DURATION,
+      borderRadius: 20 
     });
+    tl.to(
+      titleRef.current,
+      {
+        duration: HEIGHT_DURATION,
+        fontSize: TITLE_FONT_SIZE,
+        borderRadius: 20 
+      },
+      '<',
+    );
+    tl.to(
+      itemRef.current,
+      {
+        // height: '100%',
+        duration: HEIGHT_DURATION,
+        borderRadius: 20
+      },
+      '<',
+    );
     tl.to(videoContainerRef.current, {
       width: '50vw',
-      duration: 0.2,
+      duration: WIDTH_DURATION,
       onComplete: () => {
         itemRef.current.pause();
         setAnimationPhase('shrink');
@@ -256,6 +304,7 @@ export default React.memo(function Video(props) {
       >
         <Title
           id={id}
+          ref={titleRef}
           onClick={onClickTitle}
           fontSize={TITLE_FONT_SIZE}
           bgColor={TITLE_BAR_COLOR}
