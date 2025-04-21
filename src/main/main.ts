@@ -25,8 +25,8 @@ class AppUpdater {
 
 const args = process.argv;
 const modeIndex = args.indexOf("--mode");
-const mode = modeIndex !== -1 && args[modeIndex + 1] ? args[modeIndex + 1]:'grid'
-console.log(mode)
+const mode = modeIndex !== -1 && args[modeIndex + 1] ? args[modeIndex + 1]:'stacked'
+console.log(args, mode)
 
 const isDevelopment =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
