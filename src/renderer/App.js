@@ -102,15 +102,10 @@ function App() {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(async () => {
-    // const {assetId, sources} = await getAssetFromServer({
-    //   cmd: 'latestNewsPreview',
-    // });
-    // setDB(sources);
-    // setCurrentAssetId(assetId);
-    // window.electron.ipcRenderer.getMode((appMode) => {
-    //   console.log(appMode);
-    //   setMode(appMode)
-    // });
+    window.electron.ipcRenderer.getMode((appMode) => {
+      console.log(appMode);
+      setMode(appMode)
+    });
     await setDBFromServer('latestNewsPreview');
     const assetList = await getAssetFromServer({
       cmd: 'newsPreviewList'
