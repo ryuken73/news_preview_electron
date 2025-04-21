@@ -49,6 +49,7 @@ const Title = styled.div`
 
 const INITIAL_CONFIG = defaultConfig;
 
+
 export default React.memo(function Video(props) {
   const {
     item,
@@ -100,6 +101,7 @@ export default React.memo(function Video(props) {
   const isExpandPhase = animationPhase === null;
   const isShrinkPhase = animationPhase === 'expand';
 
+
   useGSAP(
     () => {
       console.log('isActive Changed:', id, activeIdState, isActive);
@@ -109,9 +111,18 @@ export default React.memo(function Video(props) {
       if (isActive) {
         return;
       }
-      const xRand = `${Math.random() * 200 - 100}vw`;
-      const yRand = `${Math.random() * 200 - 100}vh`;
-      const rRand = `${Math.random() * 1800}`;
+      const randomMinus = gsap.utils.random(-100, -50, 1, true);
+      const randomPlus = gsap.utils.random(50, 100, 1, true);
+      const randomValue = gsap.utils.random(
+        [randomMinus(), randomPlus()],
+        1,
+        true,
+      );
+      // const rRand = `${Math.random() * 1800}`;
+      const rRand = `${randomValue() * 10}`;
+      const xRand = `${randomValue()}vw`;
+      const yRand = `${randomValue()}vh`;
+      console.log('xRand, yRand, rRand:',xRand, yRand, rRand);
       if (animationPhase === 'shrink') {
         gsap.fromTo(
           videoContainerRef.current,
@@ -164,7 +175,7 @@ export default React.memo(function Video(props) {
     parentRef.current.style.height = '100vh';
     lastOrderRef.current += 1;
     videoContainerRef.current.style.order = lastOrderRef.current;
-    videoContainerRef.current.style.margin = 0;
+    // videoContainerRef.current.style.margin = 0;
     const tl = Flip.from(state, {
       duration: 0.5,
       nested: true,
@@ -178,7 +189,7 @@ export default React.memo(function Video(props) {
     parentRef.current.style.justifyContent = 'null';
     parentRef.current.style.height = 'auto';
     videoContainerRef.current.style.order = id;
-    videoContainerRef.current.style.margin = '10px';
+    // videoContainerRef.current.style.margin = '10px';
     const tl = Flip.from(state, {
       duration: 0.5,
       nested: true,
