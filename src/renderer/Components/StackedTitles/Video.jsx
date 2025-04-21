@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { Flip } from 'gsap/Flip';
+import audioTouch from '../../assets/audio/touch.mp3';
 import audioScaleUp from '../../assets/audio/scaleUp.mp3';
 import audioScaleDown from '../../assets/audio/scaleDown.mp3';
 import useLocalStorage from '../../hooks/useLocalStorage';
@@ -206,6 +207,9 @@ export default React.memo(function Video(props) {
     tl.to(videoContainerRef.current, {
       width: '100vw',
       duration: WIDTH_DURATION,
+      onComplete: () => {
+        new Audio(audioScaleUp).play();
+      }
     });
     tl.to(videoContainerRef.current, {
       height: '100vh',
@@ -235,6 +239,7 @@ export default React.memo(function Video(props) {
 
   const gsapScaleDown = contextSafe(() => {
     const tl = gsap.timeline();
+    new Audio(audioScaleDown).play();
     tl.to(videoContainerRef.current, {
       height: '15vh',
       duration: HEIGHT_DURATION,
@@ -274,6 +279,7 @@ export default React.memo(function Video(props) {
     (e) => {
       e.stopPropagation();
       if (isExpandPhase) {
+        new Audio(audioTouch).play();
         const tl = gsapMoveDown();
         gsapScaleUp(tl);
         setAnimationPhase('expand');
