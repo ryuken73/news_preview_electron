@@ -210,7 +210,8 @@ export default React.memo(function Video(props) {
     tl.to(videoContainerRef.current, {
       height: '100vh',
       duration: HEIGHT_DURATION,
-      borderRadius: 0
+      borderRadius: 0,
+      margin: 0,
     });
     tl.to(
       titleRef.current,
@@ -237,7 +238,8 @@ export default React.memo(function Video(props) {
     tl.to(videoContainerRef.current, {
       height: '15vh',
       duration: HEIGHT_DURATION,
-      borderRadius: 20 
+      borderRadius: 20,
+      margin: 10,
     });
     tl.to(
       titleRef.current,
