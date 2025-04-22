@@ -47,6 +47,16 @@ const Title = styled.div`
   vertical-align: middle;
   background: rgba(0, 0, 0, 0.5);
 `;
+const AutoPlayContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: -5vw;
+  width: 5vw;
+  height: 15vh;
+  font-size: 20px;
+  line-height: 15vh;
+  opacity: 0;
+`;
 
 const INITIAL_CONFIG = defaultConfig;
 
@@ -60,15 +70,17 @@ function Video(props, ref) {
     parentRef,
     lastOrderRef,
     videoContainersRef,
-    inTransitionRef
+    inTransitionRef,
   } = props;
   const [zIndex, setZindex] = React.useState(0);
   const [expanded, setExpanded] = React.useState(false);
+  const [isAutoPlay, setAutoPlay] = React.useState(false);
 
   // const videoContainerRef = React.useRef(null);
   const itemRef = React.useRef(null);
   const titleRef = React.useRef(null);
   const flipStateRef = React.useRef(null);
+  const autoPlayRef = React.useRef(null);
 
   const LOCAL_MEDIA_PATH = config.mediaRootGrid;
   const USE_LOCAL_PATH = config.useLocalPathGrid || false;
@@ -105,9 +117,13 @@ function Video(props, ref) {
   const SCATTER_OUT_DURATION = 0.5;
   const SCATTER_IN_DURATION = 0.5;
 
-  console.log('activeIdState', activeIdState)
+  console.log('playerId', id);
+  console.log('activeIdState', activeIdState);
+  console.log('isAutoPlay', isAutoPlay);
 
-  const startExpand = contextSafe(() => {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const startExpand = contextSafe((isAutoPlay) => {
+    console.log(isAutoPlay)
     setActiveIdState(id);
     inTransitionRef.current = true;
     const videoElement = videoContainersRef.current[id];
@@ -143,6 +159,10 @@ function Video(props, ref) {
       onComplete: () => {
         setExpanded(true);
         inTransitionRef.current = false;
+        if (isAutoPlay) {
+          console.log('in gsapVertExpand');
+          itemRef.current.play();
+        }
       },
     });
 
@@ -168,7 +188,8 @@ function Video(props, ref) {
       const tween = gsap.to(otherElements, {
         x: () => `${gsap.utils.random([randomMinus(), randomPlus()])}vw`, // 요소마다 새 랜덤 값
         y: () => `${gsap.utils.random([randomMinus(), randomPlus()])}vh`,
-        rotate: () => `${gsap.utils.random([randomMinus(), randomPlus()]) * 10}`,
+        rotate: () =>
+          `${gsap.utils.random([randomMinus(), randomPlus()]) * 10}`,
         opacity: 0,
         duration: SCATTER_OUT_DURATION,
         width: 50,
@@ -242,7 +263,8 @@ function Video(props, ref) {
         {
           x: () => `${gsap.utils.random([randomMinus(), randomPlus()])}vw`, // 요소마다 새 랜덤 값
           y: () => `${gsap.utils.random([randomMinus(), randomPlus()])}vh`,
-          rotate: () => `${gsap.utils.random([randomMinus(), randomPlus()]) * 10}`,
+          rotate: () =>
+            `${gsap.utils.random([randomMinus(), randomPlus()]) * 10}`,
           opacity: 0,
           width: 0,
         },
@@ -273,7 +295,7 @@ function Video(props, ref) {
       .add(gsapTitleShrink, 'shrinkStart')
       .add(gsapBorderReset, 'shrinkStart')
       .add('moveStart')
-      .add(gsapScatterIn(), 'moveStart')
+      .add(gsapScatterIn(), 'moveStart');
   });
 
   const onClickTitle = React.useCallback(
@@ -288,9 +310,9 @@ function Video(props, ref) {
         startShrink();
         return;
       }
-      startExpand();
+      startExpand(isAutoPlay);
     },
-    [expanded],
+    [expanded, isAutoPlay],
   );
 
   const onClickVideo = React.useCallback(() => {
@@ -299,6 +321,26 @@ function Video(props, ref) {
     } else {
       itemRef.current.pause();
     }
+  }, []);
+
+  const blinkAutoPlayElement = contextSafe(() => {
+    gsap.fromTo(
+      autoPlayRef.current,
+      {
+        opacity: 1,
+      },
+      {
+        opacity: 0,
+        duration: 1,
+      },
+    );
+  });
+
+  const toggleAuto = React.useCallback((e) => {
+    e.stopPropagation();
+    blinkAutoPlayElement();
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    setAutoPlay((isAutoPlay) => !isAutoPlay);
   }, []);
 
   return (
@@ -336,6 +378,9 @@ function Video(props, ref) {
             : 'H'}
         </Title>
       </TitleContainer>
+      <AutoPlayContainer ref={autoPlayRef} onClick={toggleAuto}>
+        {isAutoPlay ? 'auto' : 'manual'}
+      </AutoPlayContainer>
     </VideoContainer>
   );
 }
