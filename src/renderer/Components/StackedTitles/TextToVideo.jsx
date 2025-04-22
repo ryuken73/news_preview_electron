@@ -17,6 +17,7 @@ const Container = styled.div`
   position: relative;
   width: 100vw;
   height: 100vh;
+  font-family: ${(props) => props.fontFamily};
   /* display: flex;
   flex-wrap: wrap; */
 `;
@@ -48,7 +49,8 @@ export default React.memo(function TextToVideo(props) {
   const [animationPhase, setAnimationPhase] = React.useState(null);
   const topRef = React.useRef(null);
   const videoParentContainer = React.useRef(null);
-  const lastOrderRef = React.useRef(4);
+  const lastOrderRef = React.useRef(db.length);
+  const videoContainersRef = React.useRef([]);
 
   const [config, setConfig] = React.useState(storedValue);
   const [configDialogOpen, setConfigDialogOpen] = React.useState(false);
@@ -93,7 +95,10 @@ export default React.memo(function TextToVideo(props) {
             lastOrderRef={lastOrderRef}
             animationPhase={animationPhase}
             setAnimationPhase={setAnimationPhase}
-           />
+            videoContainersRef={videoContainersRef}
+            // eslint-disable-next-line no-return-assign
+            ref={(el) => (videoContainersRef.current[i] = el)}
+          />
         ))}
         <ConfigButton onClick={toggleDialogOpen} />
         <ConfigDialog
