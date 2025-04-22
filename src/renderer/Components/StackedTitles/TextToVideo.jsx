@@ -29,12 +29,16 @@ const CenterContainer = styled.div`
 `;
 const ConfigButton = styled.div`
   position: absolute;
-  top: 50%;
-  right: 50%;
-  transform: translate(50%, -50%);
-  min-height: 20px;
-  min-width: 20px;
-  background-color: transparent;
+  /* top: 50%;
+  right: 50%; */
+  bottom: -15vh;
+  /* transform: translate(50%, -50%); */
+  min-height: 15vh;
+  line-height: 15vh;
+  min-width: 100%;
+  opacity: 0;
+  /* opacity: 1; */
+  /* background-color: maroon; */
 `;
 
 const INITIAL_CONFIG = defaultConfig;
@@ -53,12 +57,16 @@ export default React.memo(function TextToVideo(props) {
   const videoContainersRef = React.useRef([]);
   const inTransitionRef = React.useRef(null);
 
+  const configButtonRef = React.useRef(null);
+  const buttonTweenRef = React.useRef(null);
+
   const [config, setConfig] = React.useState(storedValue);
   const [configDialogOpen, setConfigDialogOpen] = React.useState(false);
 
   const itemsRef = React.useRef([]);
 
   const TITLE_FONT_FAMILY = config.titleFontFamilyGrid || 'SUITE';
+  const { contextSafe } = useGSAP();
 
   const updateConfig = React.useCallback(
     (key, value, saveLocal = true) => {
@@ -76,9 +84,34 @@ export default React.memo(function TextToVideo(props) {
     [saveToLocalStorage],
   );
 
-  const toggleDialogOpen = React.useCallback(() => {
+  const blinkButtonElement = contextSafe(() => {
+    const tween = gsap.fromTo(
+      configButtonRef.current,
+      {
+        opacity: 1,
+      },
+      {
+        opacity: 0,
+        duration: 2,
+      },
+    );
+    return tween;
+  });
+
+  const toggleDialogOpen = React.useCallback((e) => {
     // eslint-disable-next-line @typescript-eslint/no-shadow
-    setConfigDialogOpen((configDialogOpen) => !configDialogOpen);
+    const eventFromOpenButton = e !== undefined;
+    if (eventFromOpenButton) {
+      e?.stopPropagation();
+      if (buttonTweenRef.current?.isActive()) {
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        setConfigDialogOpen((configDialogOpen) => !configDialogOpen);
+      }
+      buttonTweenRef.current = blinkButtonElement();
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-shadow
+      setConfigDialogOpen((configDialogOpen) => !configDialogOpen);
+    }
   }, []);
 
   return (
@@ -102,7 +135,9 @@ export default React.memo(function TextToVideo(props) {
             ref={(el) => (videoContainersRef.current[i] = el)}
           />
         ))}
-        <ConfigButton onClick={toggleDialogOpen} />
+        <ConfigButton ref={configButtonRef} onClick={toggleDialogOpen}>
+          click again to open config
+        </ConfigButton>
         <ConfigDialog
           configDialogOpen={configDialogOpen}
           toggleDialogOpen={toggleDialogOpen}
