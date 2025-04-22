@@ -51,6 +51,7 @@ export default React.memo(function TextToVideo(props) {
   const videoParentContainer = React.useRef(null);
   const lastOrderRef = React.useRef(db.length);
   const videoContainersRef = React.useRef([]);
+  const inTransitionRef = React.useRef(null);
 
   const [config, setConfig] = React.useState(storedValue);
   const [configDialogOpen, setConfigDialogOpen] = React.useState(false);
@@ -96,6 +97,7 @@ export default React.memo(function TextToVideo(props) {
             animationPhase={animationPhase}
             setAnimationPhase={setAnimationPhase}
             videoContainersRef={videoContainersRef}
+            inTransitionRef={inTransitionRef}
             // eslint-disable-next-line no-return-assign
             ref={(el) => (videoContainersRef.current[i] = el)}
           />

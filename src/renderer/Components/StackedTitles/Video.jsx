@@ -59,9 +59,8 @@ function Video(props, ref) {
     config,
     parentRef,
     lastOrderRef,
-    animationPhase,
-    setAnimationPhase,
     videoContainersRef,
+    inTransitionRef
   } = props;
   const [zIndex, setZindex] = React.useState(0);
   const [expanded, setExpanded] = React.useState(false);
@@ -69,13 +68,11 @@ function Video(props, ref) {
   // const videoContainerRef = React.useRef(null);
   const itemRef = React.useRef(null);
   const titleRef = React.useRef(null);
-  const timelineRef = React.useRef(null);
   const flipStateRef = React.useRef(null);
 
   const LOCAL_MEDIA_PATH = config.mediaRootGrid;
   const USE_LOCAL_PATH = config.useLocalPathGrid || false;
   const TITLE_FONT_SIZE = config.titleFontSizeGrid || 50;
-  const TITLE_FONT_FAMILY = config.titleFontFamilyGrid || 'SUITE';
   const TITLE_BAR_COLOR = config.titleBarColorGrid || 'rgba(0, 0, 0, 0.4)';
   const VIDEO_FILTER_TYPE = config.videoFilterTypeGrid || 'saturate';
   const VIDEO_FILTER_VALUE =
@@ -105,8 +102,14 @@ function Video(props, ref) {
 
   const WIDTH_DURATION = 0.2;
   const HEIGHT_DURATION = 0.3;
+  const SCATTER_OUT_DURATION = 0.5;
+  const SCATTER_IN_DURATION = 0.5;
+
+  console.log('activeIdState', activeIdState)
 
   const startExpand = contextSafe(() => {
+    setActiveIdState(id);
+    inTransitionRef.current = true;
     const videoElement = videoContainersRef.current[id];
     const gsapMoveDown = () => {
       const state = Flip.getState([parentRef.current, videoElement]);
@@ -139,6 +142,7 @@ function Video(props, ref) {
       margin: 0,
       onComplete: () => {
         setExpanded(true);
+        inTransitionRef.current = false;
       },
     });
 
@@ -166,15 +170,15 @@ function Video(props, ref) {
         y: () => `${gsap.utils.random([randomMinus(), randomPlus()])}vh`,
         rotate: () => `${gsap.utils.random([randomMinus(), randomPlus()]) * 10}`,
         opacity: 0,
-        duration: 0.5,
+        duration: SCATTER_OUT_DURATION,
         width: 50,
       });
       return tween;
     };
 
-    timelineRef.current = gsap.timeline();
+    const master = gsap.timeline();
 
-    timelineRef.current
+    master
       .add(gsapMoveDown())
       .add(gsapScatterAway(), '<')
       .add('expandStart')
@@ -185,6 +189,7 @@ function Video(props, ref) {
   });
 
   const startShrink = contextSafe(() => {
+    inTransitionRef.current = true;
     const videoElement = videoContainersRef.current[id];
     const gsapMoveUp = () => {
       const state = Flip.getState([parentRef.current, videoElement]);
@@ -247,20 +252,21 @@ function Video(props, ref) {
           rotate: 360,
           opacity: 1,
           width: '50vw',
-          duration: 0.5,
+          duration: SCATTER_IN_DURATION,
           stagger: 0.1,
           onComplete: () => {
             setActiveIdState(null);
             setExpanded(false);
+            inTransitionRef.current = false;
           },
         },
       );
       return tween;
     };
 
-    timelineRef.current = gsap.timeline();
+    const master = gsap.timeline();
 
-    timelineRef.current
+    master
       .add(gsapVertShrink)
       .add('shrinkStart')
       .add(gsapHozShrink, 'shrinkStart')
@@ -273,7 +279,8 @@ function Video(props, ref) {
   const onClickTitle = React.useCallback(
     (e) => {
       e.stopPropagation();
-      if (timelineRef.current?.isActive()) {
+      // if (timelineRef.current?.isActive()) {
+      if (inTransitionRef.current === true) {
         return;
       }
       new Audio(audioTouch).play();
